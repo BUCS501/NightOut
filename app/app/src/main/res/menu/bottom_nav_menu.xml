@@ -20,15 +20,15 @@
 
     <item
         android:id="@+id/navigation_restaurants"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_baseline_restaurant_24"
         android:title="@string/title_restaurants" />
     <item
         android:id="@+id/navigation_events"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_baseline_event_seat_24"
         android:title="@string/title_events" />
     <item
         android:id="@+id/navigation_account"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="@string/title_account" />
 
 
