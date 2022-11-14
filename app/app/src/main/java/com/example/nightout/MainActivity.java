@@ -12,9 +12,23 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.nightout.databinding.ActivityMainBinding;
 
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private static final String TEST_ZIP = "02215";
+    private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
