@@ -10,9 +10,9 @@ public class Restaurant {
     private String zip;
     private String price;
     private String imageUrl;
-    private float rating;
+    private double rating;
 
-    public Restaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, float rating) {
+    public Restaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -89,14 +89,16 @@ public class Restaurant {
         this.imageUrl = imageUrl;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-
+    public String getFormattedAddress() {
+        return address + ", " + city + ", " + state + " " + zip;
+    }
 
 }
