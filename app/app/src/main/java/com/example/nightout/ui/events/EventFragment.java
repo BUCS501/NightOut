@@ -1,4 +1,4 @@
-package com.example.nightout.ui.dashboard;
+package com.example.nightout.ui.events;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.nightout.databinding.FragmentDashboardBinding;
+import com.example.nightout.databinding.FragmentEventBinding;
 
-public class DashboardFragment extends Fragment {
+public class EventFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentEventBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        EventViewModel eventViewModel =
+                new ViewModelProvider(this).get(EventViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        eventViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
