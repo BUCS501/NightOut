@@ -1,11 +1,12 @@
 package com.example.nightout.api;
 
+import com.example.nightout.BuildConfig;
 import com.example.nightout.ui.events.Event;
 import com.example.nightout.ui.events.EventFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
@@ -17,8 +18,9 @@ import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 public class TicketmasterRetrievalThread extends Thread{
-    private static final String TEST_ZIP = "02215";
-    private static final String TEST_URL = "https://app.ticketmaster.com/discovery/v2/events.json?postalCode=" + TEST_ZIP + "&apikey=" + "TicketmasterAPIKey.API_KEY";
+    private static final String API_KEY = BuildConfig.API_KEY;
+    private static final String API_URL = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=" + API_KEY;
+
     private EventFragment originFragment;
 
     public TicketmasterRetrievalThread(EventFragment eventsFragment) {
@@ -27,15 +29,15 @@ public class TicketmasterRetrievalThread extends Thread{
 
     public void run() {
         try {
-            getEvents();
+            getEvents("concert","New York", "NY",10);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void getEvents() throws IOException, JSONException, org.json.simple.parser.ParseException {
+    public void getEvents(String keyword, String city , String state, int n) throws IOException, JSONException, org.json.simple.parser.ParseException {
         ArrayList<Event> eventsList = new ArrayList<Event>();
-        URL url = new URL(TEST_URL);
+        URL url = new URL(API_URL + "&city=" + city + "&stateCode=" + state + "&size=" + n);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
@@ -52,7 +54,7 @@ public class TicketmasterRetrievalThread extends Thread{
         JSONObject data_obj = (JSONObject) parse.parse(result);
         JSONObject embedded = (JSONObject) data_obj.get("_embedded");
         JSONArray events = (JSONArray) embedded.get("events");
-        for (int i = 0; i < events.length(); i++) {
+        for (int i = 0; i < events.size(); i++) {
             JSONObject event = (JSONObject) events.get(i);
             String name = (String) event.get("name");
             String description = (String) event.get("description");
@@ -65,8 +67,19 @@ public class TicketmasterRetrievalThread extends Thread{
             JSONObject venue = (JSONObject) venues.get(0);
             String location = (String) venue.get("name");
             JSONArray priceRanges = (JSONArray) event.get("priceRanges");
-            JSONObject priceRange = (JSONObject) priceRanges.get(0);
-            String price = (String) priceRange.get("min");
+            String price;
+            if (priceRanges == null) {
+                price = "N/A";
+            } else {
+                JSONObject priceRange = (JSONObject) priceRanges.get(0);
+                if (priceRange == null) {
+                    price = "N/A";
+                } else {
+                    price = Double.toString((Double) priceRange.get("min"));
+                }
+
+            }
+
             JSONArray images = (JSONArray) event.get("images");
             JSONObject image = (JSONObject) images.get(0);
             String imageUrl = (String) image.get("url");
