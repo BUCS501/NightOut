@@ -1,13 +1,10 @@
 package com.example.nightout;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +15,12 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import org.json.*;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.example.nightout.api.ImageRetrievalThread;
+import com.example.nightout.api.YelpRetrievalThread;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +33,7 @@ public class RestaurantsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ArrayList<Restaurant> restaurants;
 
     // TODO: Rename and change types of parameters
     private ListView lvRestaurants;
@@ -76,11 +65,14 @@ public class RestaurantsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lvRestaurants = (ListView) getView().findViewById(R.id.lvRestaurants);
-        try {
-            lvAdapter = new RestaurantAdapter(getActivity());
-        } catch (IOException | ParseException | JSONException e) {
-            e.printStackTrace();
-        }
+        restaurants = new ArrayList<Restaurant>();
+        // create an executor service to run the thread
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Calls the Yelp API and sets the restaurants array to the results
+        executor.execute(new YelpRetrievalThread(this));
+        executor.shutdown();
+        lvAdapter = new RestaurantAdapter(getActivity());
+
     }
 
     @Override
@@ -88,6 +80,14 @@ public class RestaurantsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_restaurants, container, false);
+    }
+
+    public ArrayList<Restaurant> getRestaurants() {
+        return restaurants;
+    }
+
+    public void setRestaurants(ArrayList<Restaurant> restaurants) {
+        this.restaurants = restaurants;
     }
 }
 
@@ -98,47 +98,9 @@ class RestaurantAdapter extends BaseAdapter {
     private Context aContext;
     private ArrayList<Restaurant> restaurants;
 
-    public RestaurantAdapter(Context aContext) throws IOException, ParseException, JSONException {
+    public RestaurantAdapter(Context aContext) {
             this.aContext = aContext;
-            getRestaurants();
     }
-
-    public void getRestaurants() throws IOException, ParseException, JSONException {
-        restaurants = new ArrayList<Restaurant>();
-        URL url = new URL(TEST_URL);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + YelpAPIKey.API_KEY);
-        connection.connect();
-        int responseCode = connection.getResponseCode();
-        if (responseCode == 200) {
-            System.out.println("Success");
-        } else {
-            System.out.println("Failed");
-            return;
-        }
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String result = in.readLine();
-        JSONObject obj = (JSONObject) new JSONParser().parse(result);
-        JSONArray arr = (JSONArray) obj.get("businesses");
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject restaurant = (JSONObject) arr.get(i);
-            String id = (String) restaurant.get("id");
-            String name = (String) restaurant.get("name");
-            String address = (String) ((JSONObject) restaurant.get("location")).get("address1");
-            String city = (String) ((JSONObject) restaurant.get("location")).get("city");
-            String state = (String) ((JSONObject) restaurant.get("location")).get("state");
-            String zip = (String) ((JSONObject) restaurant.get("location")).get("zip_code");
-            String price = (String) restaurant.get("price");
-            String imageUrl = (String) restaurant.get("image_url");
-            double rating = (double) restaurant.get("rating");
-            restaurants.add(new Restaurant(id, name, address, city, state, zip, price, imageUrl, rating));
-        }
-
-        in.close();
-
-    }
-
 
     @Override
     public int getCount() {
@@ -155,24 +117,6 @@ class RestaurantAdapter extends BaseAdapter {
         return i;
     }
 
-    // sourced from outside resource
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            Log.e("src",src);
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            Log.e("Bitmap","returned");
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Exception",e.getMessage());
-            return null;
-        }
-    }
 
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
@@ -186,12 +130,12 @@ class RestaurantAdapter extends BaseAdapter {
         TextView restaurantName = (TextView) row.findViewById(R.id.restaurantName);
         TextView restaurantAddress = (TextView) row.findViewById(R.id.restaurantAddress);
         RatingBar rbRestaurant = (RatingBar) row.findViewById(R.id.rbRestaurant);
-
-        imgRestaurant.setImageBitmap(getBitmapFromURL(restaurants.get(i).getImageUrl()));
         restaurantName.setText(restaurants.get(i).getName());
         restaurantAddress.setText(restaurants.get(i).getFormattedAddress());
         rbRestaurant.setRating((float) restaurants.get(i).getRating());
-
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new ImageRetrievalThread(restaurants.get(i).getImageUrl(), imgRestaurant));
+        executor.shutdown();
         return row;
     }
 }
