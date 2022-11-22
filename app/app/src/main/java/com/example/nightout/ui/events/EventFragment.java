@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,50 +14,63 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nightout.R;
-import com.example.nightout.api.TicketmasterAPI;
-import com.example.nightout.databinding.FragmentEventBinding;
+import com.example.nightout.api.ImageRetrievalThread;
+import com.example.nightout.api.TicketmasterRetrievalThread;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EventFragment extends Fragment {
 
 
     private ListView lvEvents;
     private ListAdapter lvAdapter;
+    private ArrayList<Event> events;
 
     public static EventFragment newInstance(String param1, String param2) {
         EventFragment fragment = new EventFragment();
         Bundle args = new Bundle();
-
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setEvents(ArrayList<Event> events) {
+        this.events = events;
     }
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        // create an executor service to run the thread
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Calls the Yelp API and sets the restaurants array to the results
+        executor.execute(new TicketmasterRetrievalThread(this));
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        // terminate executor
+        executor.shutdownNow();
+        System.out.println();
+    }
 
-        lvAdapter = new EventAdapter(getActivity());
-
-        View view = getView();
-        lvEvents = view.findViewById(R.id.lvEvents);
+    @Override
+    public void onStart() {
+        super.onStart();
+        lvEvents = (ListView) getView().findViewById(R.id.lvEvents);
+        lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
-
-
+        System.out.println();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-//        EventViewModel eventViewModel =
-//                new ViewModelProvider(this).get(EventViewModel.class);
-//
-//        binding = FragmentEventBinding.inflate(inflater, container, false);
-//        View root = binding.getRoot();
-//
-//        lvEvents= binding.lvEvents;
-//        eventViewModel.getText().observe(getViewLifecycleOwner(), lvEvents::setText);
-//        return root;
+
         return inflater.inflate(R.layout.fragment_event, container, false);
     }
 
@@ -69,32 +83,24 @@ public class EventFragment extends Fragment {
 
 
 class EventAdapter extends BaseAdapter {
-    private final Event[] events;
+    private final ArrayList<Event> events;
     private Context aContext;
 
-    public EventAdapter(Context context) {
+    public EventAdapter(Context context, ArrayList<Event> eventList) {
         this.aContext = aContext;
-//        TicketmasterAPI api = new TicketmasterAPI();
-//        api.searchEvents("concerts", "boston", "MA",5);
-//        events = TicketmasterAPI.getEvents();
-        events = new Event[5];
-        events[0] = new Event("Event 1", "Event 1 Description", "2023-03-02","20:00:00","Boston","10","ImageURL1");
-        events[1] = new Event("Event 2", "Event 2 Description", "2023-04-02","20:00:00","Boston","10","ImageURL2");
-        events[2] = new Event("Event 3", "Event 3 Description", "2023-05-02","20:00:00","Boston","10","ImageURL3");
-        events[3] = new Event("Event 4", "Event 4 Description", "2023-06-02","20:00:00","Boston","10","ImageURL4");
-        events[4] = new Event("Event 5", "Event 5 Description", "2023-07-02","20:00:00","Boston","10","ImageURL5");
+        this.events = eventList;
 
 
     }
 
     @Override
     public int getCount() {
-        return events.length;
+        return events.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return events[position];
+        return events.get(position);
     }
 
     @Override
@@ -109,7 +115,7 @@ class EventAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             view = inflater.inflate(R.layout.event_item, parent, false);
         }
-        Event event = events[position];
+        Event event = events.get(position);
         TextView name = view.findViewById(R.id.tvEventName);
         name.setText(event.getName());
         TextView date = view.findViewById(R.id.tvEventDate);
@@ -118,6 +124,14 @@ class EventAdapter extends BaseAdapter {
         time.setText(event.getTime());
         TextView location = view.findViewById(R.id.tvEventLocation);
         location.setText(event.getLocation());
+        ImageView image = view.findViewById(R.id.imgEvent);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new ImageRetrievalThread(events.get(position).getImage(), image));
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        executor.shutdownNow();
         return view;
     }
 }
