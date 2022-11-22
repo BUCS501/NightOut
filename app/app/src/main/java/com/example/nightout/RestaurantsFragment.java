@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import org.json.*;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
