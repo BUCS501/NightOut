@@ -21,7 +21,7 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 public class TicketmasterAPI {
-    private static final String API_KEY = BuildConfig.API_KEY;
+    private static final String API_KEY = "BuildConfig.API_KEY"; // TODO remove this from being a string
     private static Event[] events = new Event[5];
 
     class apiTask extends AsyncTask<String,Void,Event[]>{
