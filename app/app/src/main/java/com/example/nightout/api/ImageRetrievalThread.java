@@ -1,4 +1,4 @@
-package com.example.nightout;
+package com.example.nightout.api;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

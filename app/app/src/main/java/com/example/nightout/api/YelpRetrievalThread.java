@@ -1,4 +1,7 @@
-package com.example.nightout;
+package com.example.nightout.api;
+
+import com.example.nightout.Restaurant;
+import com.example.nightout.RestaurantsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

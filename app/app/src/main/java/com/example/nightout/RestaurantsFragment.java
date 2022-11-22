@@ -1,13 +1,10 @@
 package com.example.nightout;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,24 +15,12 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import org.json.*;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.example.nightout.api.ImageRetrievalThread;
+import com.example.nightout.api.YelpRetrievalThread;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * A simple {@link Fragment} subclass.
