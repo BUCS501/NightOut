@@ -5,18 +5,18 @@
     android:descendantFocusability="blocksDescendants">
 
     <ImageView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:id="@+id/imgRestaurant"
-        android:src="@drawable/blank_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="top|bottom"
         android:layout_weight="1"
-        android:layout_gravity="top|bottom" />
+        android:src="@drawable/blank_pic" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3">
+        android:layout_weight="5">
 
         <TextView
             android:id="@+id/restaurantName"
