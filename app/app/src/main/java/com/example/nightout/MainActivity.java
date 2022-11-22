@@ -3,6 +3,8 @@ package com.example.nightout;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.nightout.ui.events.EventFragment;
+import com.example.nightout.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +31,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
     private static final String TEST_ZIP = "02215";
     private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
 
@@ -43,30 +44,28 @@ public class MainActivity extends AppCompatActivity {
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                FirstFragment firstFragment = new FirstFragment();
-                SecondFragment secondFragment = new SecondFragment();
-                ThirdFragment thirdFragment = new ThirdFragment();
+                EventFragment eventFragment = new EventFragment();
+                HomeFragment homeFragment = new HomeFragment();
+                RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
+
                 switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, firstFragment).commit();
+                    case R.id.navigation_restaurants:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, restaurantsFragment).commit();
                         return true;
                     case R.id.navigation_events:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, secondFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, eventFragment).commit();
                         return true;
                     case R.id.navigation_notifications:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, thirdFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
                         return true;
                 }
+                return false;
 
             }
         });
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_events, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+
 
 
     }
