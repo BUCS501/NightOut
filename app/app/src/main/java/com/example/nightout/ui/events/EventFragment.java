@@ -16,20 +16,28 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nightout.R;
+import com.example.nightout.Restaurant;
 import com.example.nightout.api.TicketmasterAPI;
 import com.example.nightout.databinding.FragmentEventBinding;
+
+import java.util.ArrayList;
 
 public class EventFragment extends Fragment {
 
 
     private ListView lvEvents;
     private ListAdapter lvAdapter;
+    private ArrayList<Event> events;
 
     public static EventFragment newInstance(String param1, String param2) {
         EventFragment fragment = new EventFragment();
         Bundle args = new Bundle();
 
         return fragment;
+    }
+
+    public void setEvents(ArrayList<Event> events) {
+        this.events = events;
     }
 
 
