@@ -1,11 +1,13 @@
 package com.example.nightout.api;
 
+import android.util.Log;
+
 import com.example.nightout.Restaurant;
 import com.example.nightout.RestaurantsFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -54,7 +56,7 @@ public class YelpRetrievalThread extends Thread {
         String result = in.readLine();
         JSONObject obj = (JSONObject) new JSONParser().parse(result);
         JSONArray arr = (JSONArray) obj.get("businesses");
-        for (int i = 0; i < arr.length(); i++) {
+        for (int i = 0; i < arr.size(); i++) {
             JSONObject restaurant = (JSONObject) arr.get(i);
             String id = (String) restaurant.get("id");
             String name = (String) restaurant.get("name");
@@ -69,6 +71,7 @@ public class YelpRetrievalThread extends Thread {
         }
         originFragment.setRestaurants(restaurants);
         in.close();
+        Log.i("YelpRetrievalThread", "Reached end of API calls");
 
     }
 }

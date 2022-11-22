@@ -33,7 +33,7 @@ public class RestaurantsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ArrayList<Restaurant> restaurants;
+    private ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 
     // TODO: Rename and change types of parameters
     private ListView lvRestaurants;
@@ -64,15 +64,26 @@ public class RestaurantsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lvRestaurants = (ListView) getView().findViewById(R.id.lvRestaurants);
-        restaurants = new ArrayList<Restaurant>();
         // create an executor service to run the thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
         executor.execute(new YelpRetrievalThread(this));
         executor.shutdown();
-        lvAdapter = new RestaurantAdapter(getActivity());
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        // terminate executor
+        executor.shutdownNow();
+        System.out.println();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        lvRestaurants = (ListView) getView().findViewById(R.id.lvRestaurants);
+        lvAdapter = new RestaurantAdapter(getActivity(), restaurants);
+        lvRestaurants.setAdapter(lvAdapter);
+        System.out.println();
     }
 
     @Override
@@ -98,8 +109,9 @@ class RestaurantAdapter extends BaseAdapter {
     private Context aContext;
     private ArrayList<Restaurant> restaurants;
 
-    public RestaurantAdapter(Context aContext) {
+    public RestaurantAdapter(Context aContext, ArrayList<Restaurant> restaurants) {
             this.aContext = aContext;
+            this.restaurants = restaurants;
     }
 
     @Override
@@ -130,12 +142,17 @@ class RestaurantAdapter extends BaseAdapter {
         TextView restaurantName = (TextView) row.findViewById(R.id.restaurantName);
         TextView restaurantAddress = (TextView) row.findViewById(R.id.restaurantAddress);
         RatingBar rbRestaurant = (RatingBar) row.findViewById(R.id.rbRestaurant);
+        rbRestaurant.setIsIndicator(true);
         restaurantName.setText(restaurants.get(i).getName());
         restaurantAddress.setText(restaurants.get(i).getFormattedAddress());
         rbRestaurant.setRating((float) restaurants.get(i).getRating());
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new ImageRetrievalThread(restaurants.get(i).getImageUrl(), imgRestaurant));
         executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        executor.shutdownNow();
         return row;
     }
 }
