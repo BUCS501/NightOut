@@ -2,6 +2,7 @@ package com.example.nightout;
 
 import android.os.Bundle;
 
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.nightout.databinding.ActivityMainBinding;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
