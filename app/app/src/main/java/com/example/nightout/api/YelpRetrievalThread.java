@@ -2,8 +2,8 @@ package com.example.nightout.api;
 
 import android.util.Log;
 
-import com.example.nightout.Restaurant;
-import com.example.nightout.RestaurantsFragment;
+import com.example.nightout.ui.restaurants.Restaurant;
+import com.example.nightout.ui.restaurants.RestaurantsFragment;
 
 import org.json.JSONException;
 import org.json.simple.JSONArray;

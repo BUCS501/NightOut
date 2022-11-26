@@ -1,4 +1,4 @@
-package com.example.nightout;
+package com.example.nightout.ui.restaurants;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.nightout.R;
+import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
 
@@ -68,6 +70,7 @@ public class RestaurantsFragment extends Fragment {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
         executor.execute(new YelpRetrievalThread(this));
+        //executor.execute(new DetailedYelpRetrievalThread());
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish
