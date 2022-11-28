@@ -1,16 +1,16 @@
-package com.example.nightout;
+package com.example.nightout.ui.restaurants;
 
 public class Restaurant {
 
-    private String id;
-    private String name;
-    private String address;
-    private String city;
-    private String state;
-    private String zip;
-    private String price;
-    private String imageUrl;
-    private double rating;
+    protected String id;
+    protected String name;
+    protected String address;
+    protected String city;
+    protected String state;
+    protected String zip;
+    protected String price;
+    protected String imageUrl;
+    protected double rating;
 
     public Restaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating) {
         this.id = id;
