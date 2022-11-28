@@ -1,6 +1,7 @@
 package com.example.nightout.api;
 
 import com.example.nightout.ui.restaurants.DetailedRestaurant;
+import com.example.nightout.ui.restaurants.DetailedRestaurantActivity;
 import com.example.nightout.ui.restaurants.Hours;
 
 import org.json.JSONException;
@@ -25,10 +26,12 @@ public class DetailedYelpRetrievalThread extends Thread {
 
     private static final String BASE_URL = "https://api.yelp.com/v3/businesses/";
     private final String id;
+    private DetailedRestaurantActivity originActivity;
     // TODO: decide if we want to use a fragment or an activity to display the detailed restaurant
 
-    public DetailedYelpRetrievalThread(String id) {
+    public DetailedYelpRetrievalThread(String id, DetailedRestaurantActivity detailedRestaurantActivity) {
         this.id = id;
+        this.originActivity = detailedRestaurantActivity;
     }
 
     public DetailedYelpRetrievalThread() {
@@ -76,6 +79,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         ArrayList<Hours> hours = parseHours(hoursInner);
         Collections.sort(hours);
         DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, phone, displayedPhone, urlStr, hours);
+        originActivity.setRestaurant(detailedRestaurant);
     }
 
     private ArrayList<Hours> parseHours(JSONArray hoursInner) {
@@ -88,5 +92,13 @@ public class DetailedYelpRetrievalThread extends Thread {
             hours.add(new Hours(dayOfWeek, start, end));
         }
         return hours;
+    }
+
+    public DetailedRestaurantActivity getOriginActivity() {
+        return originActivity;
+    }
+
+    public void setOriginActivity(DetailedRestaurantActivity originActivity) {
+        this.originActivity = originActivity;
     }
 }

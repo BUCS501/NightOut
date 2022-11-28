@@ -15,7 +15,7 @@
         android:theme="@style/Theme.NightOut"
         tools:targetApi="31">
         <activity
-            android:name=".DetailedRestaurantActivity"
+            android:name=".ui.restaurants.DetailedRestaurantActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

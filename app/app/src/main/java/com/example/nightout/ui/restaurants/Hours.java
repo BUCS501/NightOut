@@ -41,8 +41,10 @@ public class Hours implements Comparable<Hours> {
         int closeHour = Integer.parseInt(close.substring(0, 2));
         String openAmPm = openHour < 12 ? "AM" : "PM";
         String closeAmPm = closeHour < 12 ? "AM" : "PM";
-        String formattedOpen = (openHour % 12) + open.substring(2) + " " + openAmPm;
-        String formattedClose = (closeHour % 12) + close.substring(2) + " " + closeAmPm;
+        String formattedOpenHour = openHour == 12 ? "12" : String.valueOf(openHour % 12);
+        String formattedCloseHour = closeHour == 12 ? "12" : String.valueOf(closeHour % 12);
+        String formattedOpen = formattedOpenHour + ":" + open.substring(2) + " " + openAmPm;
+        String formattedClose = formattedCloseHour + ":" + close.substring(2) + " " + closeAmPm;
         return formattedOpen + " - " + formattedClose;
     }
 

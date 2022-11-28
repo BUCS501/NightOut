@@ -113,6 +113,18 @@ public class DetailedRestaurant extends Restaurant {
 
     }
 
+    public String getFormattedHoursForDay(long day) {
+        ArrayList<Hours> hoursForDay = weekHoursMap.get(day);
+        if (hoursForDay == null) {
+            return "Closed";
+        }
+        StringBuilder formattedHours = new StringBuilder();
+        for (Hours hours : hoursForDay) {
+            formattedHours.append(hours.getFormattedHours()).append(" ");
+        }
+        return formattedHours.toString();
+    }
+
     public boolean isOpen() {
         // TODO: Implement this method if time permits, current struggle is with API version being too low (21 when 26 is required)
         return true;
