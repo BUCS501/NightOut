@@ -69,8 +69,8 @@ public class RestaurantsFragment extends Fragment {
         // create an executor service to run the thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
-        executor.execute(new YelpRetrievalThread(this));
-        //executor.execute(new DetailedYelpRetrievalThread());
+        //executor.execute(new YelpRetrievalThread(this));
+        executor.execute(new DetailedYelpRetrievalThread());
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish

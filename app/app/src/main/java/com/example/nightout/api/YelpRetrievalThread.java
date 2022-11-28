@@ -23,7 +23,7 @@ public class YelpRetrievalThread extends Thread {
 
     private static final String TEST_ZIP = "02215";
     private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
-    private RestaurantsFragment originFragment;
+    private final RestaurantsFragment originFragment;
 
 
     public YelpRetrievalThread(RestaurantsFragment restaurantsFragment) {

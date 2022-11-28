@@ -1,16 +1,24 @@
 package com.example.nightout.ui.restaurants;
 
-import java.lang.reflect.Array;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DetailedRestaurant extends Restaurant {
 
+//    protected String id;
+//    protected String name;
+//    protected String address;
+//    protected String city;
+//    protected String state;
+//    protected String zip;
+//    protected String price;
+//    protected String imageUrl;
+//    protected double rating;
     private String phoneNumber;
     private String displayedPhoneNumber;
     private String restaurantUrl;
     private ArrayList<Hours> weekHours;
+    private HashMap<Long, ArrayList<Hours>> weekHoursMap;
 
     public DetailedRestaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating) {
         super(id, name, address, city, state, zip, price, imageUrl, rating);
@@ -22,6 +30,8 @@ public class DetailedRestaurant extends Restaurant {
         this.displayedPhoneNumber = displayedPhoneNumber;
         this.restaurantUrl = restaurantUrl;
         this.weekHours = weekHours;
+        this.weekHoursMap = new HashMap<Long, ArrayList<Hours>>();
+        initWeekHoursMap();
     }
 
     public DetailedRestaurant(Restaurant restaurant, String phoneNumber, String displayedPhoneNumber, String restaurantUrl, ArrayList<Hours> weekHours) {
@@ -30,6 +40,8 @@ public class DetailedRestaurant extends Restaurant {
         this.displayedPhoneNumber = displayedPhoneNumber;
         this.restaurantUrl = restaurantUrl;
         this.weekHours = weekHours;
+        this.weekHoursMap = new HashMap<Long, ArrayList<Hours>>();
+        initWeekHoursMap();
     }
 
     public String getPhoneNumber() {
@@ -62,6 +74,43 @@ public class DetailedRestaurant extends Restaurant {
 
     public void setWeekHours(ArrayList<Hours> weekHours) {
         this.weekHours = weekHours;
+    }
+
+    public HashMap<Long, ArrayList<Hours>> getWeekHoursMap() {
+        return weekHoursMap;
+    }
+
+    public void setWeekHoursMap(HashMap<Long, ArrayList<Hours>> weekHoursMap) {
+        this.weekHoursMap = weekHoursMap;
+    }
+
+    public ArrayList<Hours> getHoursForDay(long day) {
+        return weekHoursMap.get(day);
+    }
+
+    public void setHoursForDay(Hours hours) {
+        if (weekHoursMap == null) {
+            weekHoursMap = new HashMap<>();
+        }
+        ArrayList<Hours> hoursForDay = weekHoursMap.get(hours.getDay());
+        if (hoursForDay == null) {
+            hoursForDay = new ArrayList<>();
+        }
+        hoursForDay.add(hours);
+        weekHoursMap.put(hours.getDay(), hoursForDay);
+    }
+
+    public void initWeekHoursMap() {
+        for (Hours hours : weekHours) {
+             // if hours not in map, add it
+            ArrayList<Hours> hoursForDay = weekHoursMap.get(hours.getDay());
+            if (hoursForDay == null) {
+                hoursForDay = new ArrayList<>();
+            }
+            hoursForDay.add(hours);
+            weekHoursMap.put(hours.getDay(), hoursForDay);
+        }
+
     }
 
     public boolean isOpen() {
