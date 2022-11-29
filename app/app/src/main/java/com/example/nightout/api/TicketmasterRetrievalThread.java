@@ -29,7 +29,7 @@ public class TicketmasterRetrievalThread extends Thread{
 
     public void run() {
         try {
-            getEvents("concert","New York", "NY",10);
+            getEvents("concert","Boston", "MA",10);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
