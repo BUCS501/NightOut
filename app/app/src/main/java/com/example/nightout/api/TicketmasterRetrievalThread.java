@@ -29,7 +29,7 @@ public class TicketmasterRetrievalThread extends Thread{
 
     public void run() {
         try {
-            getEvents("concert","New York", "NY",10);
+            getEvents("concert","Boston", "MA",10);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
@@ -58,6 +58,7 @@ public class TicketmasterRetrievalThread extends Thread{
             JSONObject event = (JSONObject) events.get(i);
             String name = (String) event.get("name");
             String description = (String) event.get("description");
+            String id = (String) event.get("id");
             JSONObject dates = (JSONObject) event.get("dates");
             JSONObject start = (JSONObject) dates.get("start");
             String date = (String) start.get("localDate");
@@ -83,7 +84,7 @@ public class TicketmasterRetrievalThread extends Thread{
             JSONArray images = (JSONArray) event.get("images");
             JSONObject image = (JSONObject) images.get(0);
             String imageUrl = (String) image.get("url");
-            Event eventCurr = new Event(name, description, date, time, location, price, imageUrl);
+            Event eventCurr = new Event(id,name, description, date, time, location, price, imageUrl);
             eventsList.add(eventCurr);
 
 

@@ -1,10 +1,12 @@
 package com.example.nightout.ui.events;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -66,6 +68,16 @@ public class EventFragment extends Fragment {
         lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
         System.out.println();
+
+        lvEvents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Event event = events.get(i);
+                Intent intent = new Intent(getActivity(), DetailedEventActivity.class);
+                intent.putExtra("eventID", event.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
