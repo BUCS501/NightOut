@@ -3,7 +3,9 @@ package com.example.nightout.ui.restaurants;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -29,6 +31,8 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
     private RatingBar rbRestaurant; // TODO: change to proper naming convention
     private Button callButton;
     private Button directionsButton;
+    private Button websiteButton;
+    private Button bookmarkButton;
     private TableLayout restaurantHours;
     private String restaurantID;
     private DetailedRestaurant restaurant;
@@ -51,6 +55,38 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
         // Calls method to set the views to the restaurant information
         setViews();
 
+        // Create onClickListeners for the buttons
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + restaurant.getPhoneNumber()));
+                startActivity(intent);
+            }
+        });
+
+        directionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getMapsUrl()));
+                startActivity(intent);
+            }
+        });
+
+        websiteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurant.getRestaurantUrl()));
+                startActivity(intent);
+            }
+        });
+
+        bookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Insert bookmark functionality
+            }
+        });
+
     }
 
     public void initializeViews() {
@@ -63,12 +99,14 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
         rbRestaurant.setIsIndicator(true);
         callButton = (Button) findViewById(R.id.callBtn);
         directionsButton = (Button) findViewById(R.id.directionsBtn);
+        websiteButton = (Button) findViewById(R.id.websiteBtn);
+        bookmarkButton = (Button) findViewById(R.id.bookmarkBtn);
         restaurantHours = (TableLayout) findViewById(R.id.restaurantHours);
     }
 
     public void setViews() {
         restaurantName.setText(restaurant.getName());
-        restaurantAddress.setText(restaurant.getAddress());
+        restaurantAddress.setText(restaurant.getFormattedAddress());
         restaurantPhoneNumber.setText(restaurant.getDisplayedPhoneNumber());
         restaurantPrice.setText(restaurant.getPrice());
         rbRestaurant.setRating((float) restaurant.getRating());
@@ -103,6 +141,21 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
         // terminate executor
         executor.shutdownNow();
         System.out.println();
+    }
+
+    public String getMapsUrl() {
+        char[] address = restaurant.getFormattedAddress().toCharArray();
+        StringBuilder mapsUrl = new StringBuilder("https://www.google.com/maps/search/?api=1&query=");
+        for (char c : address) {
+            if (c == ' ') {
+                mapsUrl.append("+");
+            } else if (c == ',') {
+                mapsUrl.append("%2C");
+            } else {
+                mapsUrl.append(c);
+            }
+        }
+        return mapsUrl.toString();
     }
 
     public DetailedRestaurant getRestaurant() {

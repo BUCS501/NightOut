@@ -9,14 +9,13 @@
 
     <ImageView
         android:id="@+id/restaurantImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="30dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="30dp"
+        android:contentDescription="@string/restaurantImageDesc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/blank_pic"
-        android:contentDescription="@string/restaurantImageDesc" />
+        app:srcCompat="@drawable/blank_pic" />
 
     <TextView
         android:id="@+id/restaurantName"
@@ -38,6 +37,7 @@
         android:layout_marginTop="15dp"
         android:text="restaurantAddress"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/restaurantImage"
         app:layout_constraintTop_toBottomOf="@+id/restaurantName" />
@@ -50,6 +50,7 @@
         android:layout_marginTop="15dp"
         android:text="restaurantNumber"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/restaurantImage"
         app:layout_constraintTop_toBottomOf="@+id/restaurantAddress" />
@@ -62,34 +63,36 @@
         android:layout_marginTop="15dp"
         android:text="restaurantPrice"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/restaurantImage"
         app:layout_constraintTop_toBottomOf="@+id/restaurantPhoneNumber" />
 
     <RatingBar
         android:id="@+id/rbRestaurant"
-        android:layout_width="235dp"
-        android:layout_height="46dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="10dp"
         android:numStars="5"
         android:rating="3"
-        android:scaleX=".8"
-        android:scaleY=".8"
+        android:scaleX=".5"
+        android:scaleY=".5"
         android:stepSize=".5"
         android:transformPivotX="0dp"
         android:transformPivotY="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/restaurantImage" />
+        app:layout_constraintStart_toEndOf="@+id/restaurantImage"
+        app:layout_constraintTop_toBottomOf="@+id/restaurantPrice" />
 
     <Button
         android:id="@+id/callBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:text="@string/callButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rbRestaurant" />
@@ -98,7 +101,7 @@
         android:id="@+id/directionsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:text="@string/directionsButton"
         app:layout_constraintEnd_toStartOf="@+id/websiteBtn"
         app:layout_constraintStart_toEndOf="@+id/callBtn"
@@ -108,7 +111,7 @@
         android:id="@+id/restaurantHours"
         android:layout_width="350dp"
         android:layout_height="250dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
@@ -296,10 +299,20 @@
         android:id="@+id/websiteBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="30dp"
         android:text="@string/websiteButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rbRestaurant" />
+
+    <Button
+        android:id="@+id/bookmarkBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:text="@string/restaurantBookmarkButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/restaurantHours" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

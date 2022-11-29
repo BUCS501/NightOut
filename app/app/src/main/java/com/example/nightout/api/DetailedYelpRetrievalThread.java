@@ -75,7 +75,12 @@ public class DetailedYelpRetrievalThread extends Thread {
         String displayedPhone = (String) restaurant.get("display_phone");
         String urlStr = (String) restaurant.get("url");
         JSONArray hoursOuter = (JSONArray) restaurant.get("hours");
-        JSONArray hoursInner = (JSONArray) ((JSONObject) hoursOuter.get(0)).get("open");
+        JSONArray hoursInner;
+        if (hoursOuter != null) {
+            hoursInner = (JSONArray) ((JSONObject) hoursOuter.get(0)).get("open");
+        } else {
+            hoursInner = new JSONArray();
+        }
         ArrayList<Hours> hours = parseHours(hoursInner);
         Collections.sort(hours);
         DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, phone, displayedPhone, urlStr, hours);
