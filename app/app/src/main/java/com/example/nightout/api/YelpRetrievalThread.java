@@ -2,8 +2,8 @@ package com.example.nightout.api;
 
 import android.util.Log;
 
-import com.example.nightout.Restaurant;
-import com.example.nightout.RestaurantsFragment;
+import com.example.nightout.ui.restaurants.Restaurant;
+import com.example.nightout.ui.restaurants.RestaurantsFragment;
 
 import org.json.JSONException;
 import org.json.simple.JSONArray;
@@ -23,7 +23,7 @@ public class YelpRetrievalThread extends Thread {
 
     private static final String TEST_ZIP = "02215";
     private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
-    private RestaurantsFragment originFragment;
+    private final RestaurantsFragment originFragment;
 
 
     public YelpRetrievalThread(RestaurantsFragment restaurantsFragment) {

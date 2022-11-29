@@ -8,4 +8,19 @@
     <string name="title_account">Account</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="callButton">Call</string>
+    <string name="directionsButton">Directions</string>
+    <string name="websiteButton">Website</string>
+    <string name="restaurantBookmarkButton">Save this Restaurant</string>
+    <string name="hours">Hours</string>
+    <string name="sunday">Sunday: </string>
+    <string name="monday">Monday: </string>
+    <string name="tuesday">Tuesday: </string>
+    <string name="wednesday">Wednesday: </string>
+    <string name="thursday">Thursday: </string>
+    <string name="friday">Friday: </string>
+    <string name="saturday">Saturday: </string>
+    <string name="closed">Closed</string>
+    <string name="restaurantImageDesc">An image provided by the restaurant</string>
+    :
 </resources>

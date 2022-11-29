@@ -1,6 +1,7 @@
-package com.example.nightout;
+package com.example.nightout.ui.restaurants;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -15,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.nightout.R;
+import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
 
@@ -68,6 +72,7 @@ public class RestaurantsFragment extends Fragment {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
         executor.execute(new YelpRetrievalThread(this));
+        //executor.execute(new DetailedYelpRetrievalThread());
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish
@@ -75,6 +80,7 @@ public class RestaurantsFragment extends Fragment {
         // terminate executor
         executor.shutdownNow();
         System.out.println();
+
     }
 
     @Override
@@ -84,6 +90,16 @@ public class RestaurantsFragment extends Fragment {
         lvAdapter = new RestaurantAdapter(getActivity(), restaurants);
         lvRestaurants.setAdapter(lvAdapter);
         System.out.println();
+
+        lvRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Restaurant restaurant = restaurants.get(i);
+                Intent intent = new Intent(getActivity(), DetailedRestaurantActivity.class);
+                intent.putExtra("restaurantID", restaurant.getId());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
