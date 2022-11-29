@@ -1,6 +1,7 @@
 package com.example.nightout.ui.events;
 
 public class Event {
+    private String id;
     private String name;
     private String description;
     private String date;
@@ -9,7 +10,8 @@ public class Event {
     private String price;
     private String image;
 
-    public Event(String name, String description, String date, String time, String location, String price, String image) {
+    public Event(String id, String name, String description, String date, String time, String location, String price, String image) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.date = date;
@@ -17,6 +19,10 @@ public class Event {
         this.location = location;
         this.price = price;
         this.image = image;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
