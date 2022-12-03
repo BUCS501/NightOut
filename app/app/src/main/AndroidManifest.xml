@@ -15,14 +15,21 @@
         android:theme="@style/Theme.NightOut"
         tools:targetApi="31">
         <activity
-            android:name=".ui.events.DetailedEventActivity"
+            android:name=".ui.restaurants.DetailedRestaurantActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.restaurants.DetailedRestaurantActivity"
+            android:name=".CentralActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".SignUp"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -32,6 +39,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

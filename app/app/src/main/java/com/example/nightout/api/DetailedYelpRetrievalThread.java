@@ -50,7 +50,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         URL url = new URL(BASE_URL + id);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + YelpAPIKey.API_KEY);
+        connection.setRequestProperty("Authorization", "Bearer " + "YelpAPIKey.API_KEY");
         connection.connect();
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {

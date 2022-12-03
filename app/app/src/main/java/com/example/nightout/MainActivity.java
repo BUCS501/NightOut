@@ -1,57 +1,57 @@
 package com.example.nightout;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.example.nightout.ui.events.EventFragment;
-import com.example.nightout.ui.home.HomeFragment;
-import com.example.nightout.ui.restaurants.RestaurantsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.navigation.NavigationBarView;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TEST_ZIP = "02215";
-    private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
-
+    EditText username, password;
+    Button mbtn;
+    DB dB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        username = (EditText) findViewById(R.id.editTextTextPersonName3);
+        password = (EditText) findViewById(R.id.editTextTextPassword);
+        mbtn = findViewById(R.id.button);
+        dB = new DB(this);
+        mbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                EventFragment eventFragment = new EventFragment();
-                HomeFragment homeFragment = new HomeFragment();
-                RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
+            public void onClick(View view) {
+                String user = username.getText().toString();
+                String pass = password.getText().toString();
+                String check = dB.getdatapass(user);
 
-                switch (item.getItemId()) {
-                    case R.id.navigation_restaurants:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, restaurantsFragment).commit();
-                        return true;
-                    case R.id.navigation_events:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, eventFragment).commit();
-                        return true;
-                    case R.id.navigation_notifications:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
-                        return true;
+                if(user.equals("")||pass.equals(""))
+                    Toast.makeText(MainActivity.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
+                else{
+                    BCrypt.Result result = BCrypt.verifyer().verify(pass.toCharArray(), check);
+                   // Boolean checkuserpass = dB.checkusernamepassword(user, bcryptHashString);
+                    if(result.verified==true){
+                        SignUp.user = user;
+                        Toast.makeText(MainActivity.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
+                        Intent intent  = new Intent(getApplicationContext(), CentralActivity.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(MainActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                return false;
-
             }
         });
-
-
-
-
-
+        Button btn = findViewById(R.id.button3);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,SignUp.class));
+            }
+        });
     }
-
 }

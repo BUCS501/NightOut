@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 public class TicketmasterRetrievalThread extends Thread{
-    private static final String API_KEY = BuildConfig.API_KEY;
+    private static final String API_KEY = "BuildConfig.API_KEY";
     private static final String API_URL = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=" + API_KEY;
 
     private EventFragment originFragment;
