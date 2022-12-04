@@ -1,7 +1,10 @@
 package com.example.nightout.ui.events;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.nightout.R;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.TicketmasterRetrievalThread;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +63,13 @@ public class EventFragment extends Fragment {
         // terminate executor
         executor.shutdownNow();
         System.out.println();
+
+        // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        String eventsListString = new Gson().toJson(events);
+        myEdit.putString("current_events", eventsListString);
+        myEdit.commit();
     }
 
     @Override
