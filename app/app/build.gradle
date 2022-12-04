@@ -19,7 +19,7 @@ android {
         versionName "1.0"
         buildConfigField "String", "TM_API_KEY", localProperties['tmApiKey']
         buildConfigField "String", "YELP_API_KEY", localProperties['yelpApiKey']
-        buildConfigField "String", "GM_API_KEY", localProperties['gmApiKey']
+        resValue "string",  "GM_API_KEY",  localProperties['gmApiKey']
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
