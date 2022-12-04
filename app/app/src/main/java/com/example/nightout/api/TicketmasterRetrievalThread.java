@@ -84,7 +84,11 @@ public class TicketmasterRetrievalThread extends Thread {
             JSONArray images = (JSONArray) event.get("images");
             JSONObject image = (JSONObject) images.get(0);
             String imageUrl = (String) image.get("url");
-            Event eventCurr = new Event(id, name, description, date, time, location, price, imageUrl);
+            JSONObject locationObj = (JSONObject) venue.get("location");
+            String latitude = (String) locationObj.get("latitude");
+            String longitude = (String) locationObj.get("longitude");
+
+            Event eventCurr = new Event(id, name, description, date, time, location, price, imageUrl, latitude, longitude);
             eventsList.add(eventCurr);
 
 
