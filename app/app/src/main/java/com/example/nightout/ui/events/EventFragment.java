@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,12 +31,13 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EventFragment extends Fragment {
+public class EventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     private ListView lvEvents;
     private ListAdapter lvAdapter;
     private ArrayList<Event> events;
+    private Spinner spinner;
 
     public static EventFragment newInstance(String param1, String param2) {
         EventFragment fragment = new EventFragment();
@@ -55,7 +58,7 @@ public class EventFragment extends Fragment {
         // create an executor service to run the thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
-        executor.execute(new TicketmasterRetrievalThread(this));
+        executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish
@@ -78,7 +81,15 @@ public class EventFragment extends Fragment {
         lvEvents = (ListView) getView().findViewById(R.id.lvEvents);
         lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
-        System.out.println();
+
+        spinner = (Spinner) getView().findViewById(R.id.spinner);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"All", "Concert", "Sports", "Theater"});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.notifyDataSetChanged();
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(this);
 
         lvEvents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,6 +101,46 @@ public class EventFragment extends Fragment {
             }
         });
     }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        update lv by making api calls
+        String selected = parent.getItemAtPosition(position).toString();
+
+        if (selected.equals("All")) {
+            // create an executor service to run the thread
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            // Calls the Yelp API and sets the restaurants array to the results
+            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+                // wait for the thread to finish
+            }
+            // terminate executor
+            executor.shutdownNow();
+            System.out.println();
+        } else {
+            // create an executor service to run the thread
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            // Calls the Yelp API and sets the restaurants array to the results
+            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589", selected));
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+                // wait for the thread to finish
+            }
+            // terminate executor
+            executor.shutdownNow();
+            System.out.println();
+
+        }
+        lvAdapter = new EventAdapter(getActivity(), events);
+        lvEvents.setAdapter(lvAdapter);
+
+    }
+
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

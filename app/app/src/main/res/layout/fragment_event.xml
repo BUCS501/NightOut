@@ -6,9 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".ui.events.EventFragment">
 
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Spinner>
+
     <ListView
+
+        android:id="@+id/lvEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lvEvents"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        android:layout_marginTop="32dp"
+        />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
