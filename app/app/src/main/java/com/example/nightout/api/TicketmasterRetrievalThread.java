@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class TicketmasterRetrievalThread extends Thread{
-    private static final String API_KEY = BuildConfig.API_KEY;
+public class TicketmasterRetrievalThread extends Thread {
+    private static final String API_KEY = BuildConfig.TM_API_KEY;
     private static final String API_URL = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=" + API_KEY;
 
-    private EventFragment originFragment;
+    private final EventFragment originFragment;
 
     public TicketmasterRetrievalThread(EventFragment eventsFragment) {
         this.originFragment = eventsFragment;
@@ -29,13 +29,13 @@ public class TicketmasterRetrievalThread extends Thread{
 
     public void run() {
         try {
-            getEvents("concert","Boston", "MA",10);
+            getEvents("concert", "Boston", "MA", 10);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void getEvents(String keyword, String city , String state, int n) throws IOException, JSONException, org.json.simple.parser.ParseException {
+    public void getEvents(String keyword, String city, String state, int n) throws IOException, JSONException, org.json.simple.parser.ParseException {
         ArrayList<Event> eventsList = new ArrayList<Event>();
         URL url = new URL(API_URL + "&city=" + city + "&stateCode=" + state + "&size=" + n);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -84,13 +84,11 @@ public class TicketmasterRetrievalThread extends Thread{
             JSONArray images = (JSONArray) event.get("images");
             JSONObject image = (JSONObject) images.get(0);
             String imageUrl = (String) image.get("url");
-            Event eventCurr = new Event(id,name, description, date, time, location, price, imageUrl);
+            Event eventCurr = new Event(id, name, description, date, time, location, price, imageUrl);
             eventsList.add(eventCurr);
 
 
-
-
-    }
+        }
         originFragment.setEvents(eventsList);
     }
 }

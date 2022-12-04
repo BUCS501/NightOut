@@ -17,7 +17,9 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "API_KEY", localProperties['apiKey']
+        buildConfigField "String", "TM_API_KEY", localProperties['tmApiKey']
+        buildConfigField "String", "YELP_API_KEY", localProperties['yelpApiKey']
+        resValue "string",  "GM_API_KEY",  localProperties['gmApiKey']
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -58,7 +60,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-}
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation files('libs/json-simple-1.1.jar')
     implementation files('libs\\json-simple-1.1.jar')
