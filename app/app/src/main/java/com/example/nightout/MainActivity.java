@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TEST_ZIP = "02215";
     private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
