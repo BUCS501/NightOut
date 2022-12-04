@@ -21,9 +21,9 @@
         android:theme="@style/Theme.NightOut"
         tools:targetApi="31">
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_map_api_key"/>
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="@string/google_map_api_key"/>-->
 
         <activity
             android:name=".ui.events.DetailedEventActivity"

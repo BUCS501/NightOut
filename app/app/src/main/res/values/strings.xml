@@ -22,4 +22,5 @@
     <string name="saturday">Saturday: </string>
     <string name="closed">Closed</string>
     <string name="restaurantImageDesc">An image provided by the restaurant</string>
+    <string name="mapString">Map</string>
 </resources>

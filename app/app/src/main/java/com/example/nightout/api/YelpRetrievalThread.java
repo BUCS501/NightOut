@@ -2,6 +2,7 @@ package com.example.nightout.api;
 
 import android.util.Log;
 
+import com.example.nightout.BuildConfig;
 import com.example.nightout.ui.restaurants.Restaurant;
 import com.example.nightout.ui.restaurants.RestaurantsFragment;
 
@@ -43,7 +44,7 @@ public class YelpRetrievalThread extends Thread {
         URL url = new URL(TEST_URL);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + YelpAPIKey.API_KEY);
+        connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.YELP_API_KEY);
         connection.connect();
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {

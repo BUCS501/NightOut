@@ -1,5 +1,6 @@
 package com.example.nightout.api;
 
+import com.example.nightout.BuildConfig;
 import com.example.nightout.ui.restaurants.DetailedRestaurant;
 import com.example.nightout.ui.restaurants.DetailedRestaurantActivity;
 import com.example.nightout.ui.restaurants.Hours;
@@ -50,7 +51,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         URL url = new URL(BASE_URL + id);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + YelpAPIKey.API_KEY);
+        connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.YELP_API_KEY);
         connection.connect();
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
