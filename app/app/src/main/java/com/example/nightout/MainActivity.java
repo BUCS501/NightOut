@@ -54,16 +54,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 EventFragment eventFragment = new EventFragment();
                 HomeFragment homeFragment = new HomeFragment();
                 RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
+                Fragment mapFragment = new MapFragment();
 
                 switch (item.getItemId()) {
+                    case R.id.navigation_maps:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, mapFragment).commit();
+                        return true;
                     case R.id.navigation_restaurants:
                         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, restaurantsFragment).commit();
                         return true;

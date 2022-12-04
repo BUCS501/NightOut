@@ -1,6 +1,6 @@
 package com.example.nightout.api;
 
-import static com.example.nightout.BuildConfig.API_KEY;
+import static com.example.nightout.BuildConfig.TM_API_KEY;
 
 import com.example.nightout.ui.events.DetailedEvent;
 import com.example.nightout.ui.events.DetailedEventActivity;
@@ -41,7 +41,7 @@ public class DetailedTicketmasterRetrievalThread extends Thread {
     }
 
     private void getEvent(String id) throws IOException, JSONException, org.json.simple.parser.ParseException {
-        URL url = new URL(BASE_URL + id + "?apikey=" + API_KEY);
+        URL url = new URL(BASE_URL + id + "?apikey=" + TM_API_KEY);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
