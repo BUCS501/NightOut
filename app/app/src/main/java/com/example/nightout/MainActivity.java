@@ -30,17 +30,28 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.view.MenuItem;
+
+import com.example.nightout.ui.events.EventFragment;
+import com.example.nightout.ui.home.HomeFragment;
+import com.example.nightout.ui.restaurants.RestaurantsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    private static final String TEST_ZIP = "02215";
+    private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -57,6 +68,32 @@ public class MainActivity extends AppCompatActivity {
 
         // Open frag
         getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, fragment).commit();
+        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                EventFragment eventFragment = new EventFragment();
+                HomeFragment homeFragment = new HomeFragment();
+                RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
+
+                switch (item.getItemId()) {
+                    case R.id.navigation_restaurants:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, restaurantsFragment).commit();
+                        return true;
+                    case R.id.navigation_events:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, eventFragment).commit();
+                        return true;
+                    case R.id.navigation_notifications:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
+                        return true;
+                }
+                return false;
+
+            }
+        });
+
+
+
+
 
     }
 
