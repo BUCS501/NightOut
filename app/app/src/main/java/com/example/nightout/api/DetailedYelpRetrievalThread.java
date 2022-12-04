@@ -1,5 +1,6 @@
 package com.example.nightout.api;
 
+import com.example.nightout.BuildConfig;
 import com.example.nightout.ui.restaurants.DetailedRestaurant;
 import com.example.nightout.ui.restaurants.DetailedRestaurantActivity;
 import com.example.nightout.ui.restaurants.Hours;
@@ -50,7 +51,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         URL url = new URL(BASE_URL + id);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "Bearer " + YelpAPIKey.API_KEY);
+        connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.YELP_API_KEY);
         connection.connect();
         int responseCode = connection.getResponseCode();
         if (responseCode == 200) {
@@ -71,6 +72,8 @@ public class DetailedYelpRetrievalThread extends Thread {
         String price = (String) restaurant.get("price");
         String imageUrl = (String) restaurant.get("image_url");
         double rating = (double) restaurant.get("rating");
+        double longitude = (double) ((JSONObject) restaurant.get("coordinates")).get("longitude");
+        double latitude = (double) ((JSONObject) restaurant.get("coordinates")).get("latitude");
         String phone = (String) restaurant.get("phone");
         String displayedPhone = (String) restaurant.get("display_phone");
         String urlStr = (String) restaurant.get("url");
@@ -83,7 +86,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         }
         ArrayList<Hours> hours = parseHours(hoursInner);
         Collections.sort(hours);
-        DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, phone, displayedPhone, urlStr, hours);
+        DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude, phone, displayedPhone, urlStr, hours);
         originActivity.setRestaurant(detailedRestaurant);
     }
 

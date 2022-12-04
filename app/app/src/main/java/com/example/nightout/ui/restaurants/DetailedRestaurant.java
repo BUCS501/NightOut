@@ -20,12 +20,12 @@ public class DetailedRestaurant extends Restaurant {
     private ArrayList<Hours> weekHours;
     private HashMap<Long, ArrayList<Hours>> weekHoursMap;
 
-    public DetailedRestaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating) {
-        super(id, name, address, city, state, zip, price, imageUrl, rating);
+    public DetailedRestaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating, double longitude, double latitude) {
+        super(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude);
     }
 
-    public DetailedRestaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating, String phoneNumber, String displayedPhoneNumber, String restaurantUrl, ArrayList<Hours> weekHours) {
-        super(id, name, address, city, state, zip, price, imageUrl, rating);
+    public DetailedRestaurant(String id, String name, String address, String city, String state, String zip, String price, String imageUrl, double rating, double longitude, double latitude, String phoneNumber, String displayedPhoneNumber, String restaurantUrl, ArrayList<Hours> weekHours) {
+        super(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude);
         this.phoneNumber = phoneNumber;
         this.displayedPhoneNumber = displayedPhoneNumber;
         this.restaurantUrl = restaurantUrl;
@@ -35,7 +35,7 @@ public class DetailedRestaurant extends Restaurant {
     }
 
     public DetailedRestaurant(Restaurant restaurant, String phoneNumber, String displayedPhoneNumber, String restaurantUrl, ArrayList<Hours> weekHours) {
-        super(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getCity(), restaurant.getState(), restaurant.getZip(), restaurant.getPrice(), restaurant.getImageUrl(), restaurant.getRating());
+        super(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getCity(), restaurant.getState(), restaurant.getZip(), restaurant.getPrice(), restaurant.getImageUrl(), restaurant.getRating(), restaurant.getLongitude(), restaurant.getLatitude());
         this.phoneNumber = phoneNumber;
         this.displayedPhoneNumber = displayedPhoneNumber;
         this.restaurantUrl = restaurantUrl;
