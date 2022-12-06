@@ -98,7 +98,12 @@ public class DetailedTicketmasterRetrievalThread extends Thread {
             }
 
         }
-        DetailedEvent detailedEvent = new DetailedEvent(id, name, description, date, time, venueName, price, imageUrl, seatmapurl, genre, urlLink,address);
+
+        JSONObject location = (JSONObject) venue.get("location");
+        String latitude = (String) location.get("latitude");
+        String longitude = (String) location.get("longitude");
+
+        DetailedEvent detailedEvent = new DetailedEvent(id, name, description, date, time, venueName, price, imageUrl, seatmapurl, genre, urlLink,address,latitude,longitude);
         originActivity.setDetailedEvent(detailedEvent);
 
 

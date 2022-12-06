@@ -8,8 +8,8 @@ private String address;
 
 
 
-    public DetailedEvent(String id,String name, String description, String date, String time, String location, String price, String image, String seatMapUrl, String segment, String eventUrl,String address) {
-        super(id,name, description, date, time, location, price, image);
+    public DetailedEvent(String id,String name, String description, String date, String time, String location, String price, String image, String seatMapUrl, String segment, String eventUrl,String address,String latitude,String longitude) {
+        super(id,name, description, date, time, location, price, image,latitude,longitude);
         this.seatMapUrl = seatMapUrl;
         this.segment = segment;
         this.eventUrl = eventUrl;

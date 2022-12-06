@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nightout.ui.events.Event;
 import com.example.nightout.ui.restaurants.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -64,10 +65,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        String eventListString = sharedPreferences.getString("current_events", null);
         if (restaurantListString != null) {
             Type type = new TypeToken<List<Restaurant>>(){}.getType();
             // Usable List of restaurants to parse for LatLong info
             List<Restaurant> restaurantList = new Gson().fromJson(restaurantListString, type);
+        }
+
+        if (eventListString != null) {
+            Type type = new TypeToken<List<Event>>(){}.getType();
+            // Usable List of events to parse for LatLong info
+            List<Event> eventList = new Gson().fromJson(eventListString, type);
         }
     }
 

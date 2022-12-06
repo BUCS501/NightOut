@@ -9,8 +9,10 @@ public class Event {
     private String location;
     private String price;
     private String image;
+    private String latitude;
+    private String longitude;
 
-    public Event(String id, String name, String description, String date, String time, String location, String price, String image) {
+    public Event(String id, String name, String description, String date, String time, String location, String price, String image, String latitude,String longitude) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -19,6 +21,8 @@ public class Event {
         this.location = location;
         this.price = price;
         this.image = image;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getId() {
@@ -52,4 +56,13 @@ public class Event {
     public String getImage() {
         return image;
     }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
 }

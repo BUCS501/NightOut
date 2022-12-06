@@ -22,22 +22,37 @@ public class TicketmasterRetrievalThread extends Thread {
     private static final String API_URL = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=" + API_KEY;
 
     private final EventFragment originFragment;
+    private String lat;
+    private String lon;
+    private String keyword;
 
-    public TicketmasterRetrievalThread(EventFragment eventsFragment) {
+
+    public TicketmasterRetrievalThread(EventFragment eventsFragment, String lat, String lon) {
         this.originFragment = eventsFragment;
+        this.lat = lat;
+        this.lon = lon;
+        this.keyword = "";
+
+    }
+    public TicketmasterRetrievalThread(EventFragment eventsFragment, String lat, String lon, String keyword) {
+        this.originFragment = eventsFragment;
+        this.lat = lat;
+        this.lon = lon;
+        this.keyword = keyword;
+
     }
 
     public void run() {
         try {
-            getEvents("concert", "Boston", "MA", 10);
+            getEvents(keyword,10,lat + "," + lon);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void getEvents(String keyword, String city, String state, int n) throws IOException, JSONException, org.json.simple.parser.ParseException {
+    public void getEvents(String keyword, int n,String latlon) throws IOException, JSONException, org.json.simple.parser.ParseException {
         ArrayList<Event> eventsList = new ArrayList<Event>();
-        URL url = new URL(API_URL + "&city=" + city + "&stateCode=" + state + "&size=" + n);
+        URL url = new URL(API_URL + "&keyword="+ keyword +"&size=" + n + "&latlong=" + latlon);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
@@ -84,7 +99,11 @@ public class TicketmasterRetrievalThread extends Thread {
             JSONArray images = (JSONArray) event.get("images");
             JSONObject image = (JSONObject) images.get(0);
             String imageUrl = (String) image.get("url");
-            Event eventCurr = new Event(id, name, description, date, time, location, price, imageUrl);
+            JSONObject locationObj = (JSONObject) venue.get("location");
+            String latitude = (String) locationObj.get("latitude");
+            String longitude = (String) locationObj.get("longitude");
+
+            Event eventCurr = new Event(id, name, description, date, time, location, price, imageUrl, latitude, longitude);
             eventsList.add(eventCurr);
 
 
