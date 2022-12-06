@@ -1,7 +1,10 @@
 package com.example.nightout;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -13,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nightout.ui.events.Event;
+import com.example.nightout.ui.restaurants.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +28,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +45,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE=101;
     Context mContext;
+    List<Restaurant> restaurantList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -52,6 +63,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        if (restaurantListString != null) {
+            Type type = new TypeToken<List<Restaurant>>(){}.getType();
+            // Usable List of restaurants to parse for LatLong info
+            restaurantList = new Gson().fromJson(restaurantListString, type);
+        }
     }
 
 
@@ -68,8 +87,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
-
 
         LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
@@ -94,6 +111,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.addMarker(markerOptions);
             }
         });
+
+        for (Restaurant restaurant: restaurantList) {
+            LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(restaurant_LatLng).title(restaurant.getName()));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant_LatLng));
+        }
+
+
     }
 
     private void getCurrentLocation() {
