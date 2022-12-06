@@ -2,3 +2,4 @@
 .DS_Store
 YelpAPIKey.java
 app/app/build.gradle.rej
+app/local.properties
