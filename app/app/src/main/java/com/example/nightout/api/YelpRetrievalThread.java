@@ -68,7 +68,9 @@ public class YelpRetrievalThread extends Thread {
             String price = (String) restaurant.get("price");
             String imageUrl = (String) restaurant.get("image_url");
             double rating = (double) restaurant.get("rating");
-            restaurants.add(new Restaurant(id, name, address, city, state, zip, price, imageUrl, rating));
+            double longitude = (double) ((JSONObject) restaurant.get("coordinates")).get("longitude");
+            double latitude = (double) ((JSONObject) restaurant.get("coordinates")).get("latitude");
+            restaurants.add(new Restaurant(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude));
         }
         originFragment.setRestaurants(restaurants);
         in.close();

@@ -72,6 +72,8 @@ public class DetailedYelpRetrievalThread extends Thread {
         String price = (String) restaurant.get("price");
         String imageUrl = (String) restaurant.get("image_url");
         double rating = (double) restaurant.get("rating");
+        double longitude = (double) ((JSONObject) restaurant.get("coordinates")).get("longitude");
+        double latitude = (double) ((JSONObject) restaurant.get("coordinates")).get("latitude");
         String phone = (String) restaurant.get("phone");
         String displayedPhone = (String) restaurant.get("display_phone");
         String urlStr = (String) restaurant.get("url");
@@ -84,7 +86,7 @@ public class DetailedYelpRetrievalThread extends Thread {
         }
         ArrayList<Hours> hours = parseHours(hoursInner);
         Collections.sort(hours);
-        DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, phone, displayedPhone, urlStr, hours);
+        DetailedRestaurant detailedRestaurant = new DetailedRestaurant(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude, phone, displayedPhone, urlStr, hours);
         originActivity.setRestaurant(detailedRestaurant);
     }
 

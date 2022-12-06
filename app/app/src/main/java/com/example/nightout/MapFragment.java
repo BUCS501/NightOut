@@ -45,7 +45,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE=101;
     Context mContext;
-    List<Restaurant> restaurantList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -66,10 +65,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        String eventListString = sharedPreferences.getString("current_events", null);
         if (restaurantListString != null) {
             Type type = new TypeToken<List<Restaurant>>(){}.getType();
             // Usable List of restaurants to parse for LatLong info
-            restaurantList = new Gson().fromJson(restaurantListString, type);
+            List<Restaurant> restaurantList = new Gson().fromJson(restaurantListString, type);
+        }
+
+        if (eventListString != null) {
+            Type type = new TypeToken<List<Event>>(){}.getType();
+            // Usable List of events to parse for LatLong info
+            List<Event> eventList = new Gson().fromJson(eventListString, type);
         }
     }
 
@@ -87,6 +93,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+
+
 
         LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
@@ -111,15 +119,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.addMarker(markerOptions);
             }
         });
-
-        for (Restaurant restaurant: restaurantList) {
-            LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(restaurant_LatLng).title(restaurant.getName()));
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(restaurant_LatLng));
-        }
-
-
     }
 
     private void getCurrentLocation() {

@@ -19,6 +19,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.nightout.databinding.ActivityMainBinding;
+import com.example.nightout.ui.account.AcccountFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TEST_ZIP = "02215";
     private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 HomeFragment homeFragment = new HomeFragment();
                 RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
                 Fragment mapFragment = new MapFragment();
+                AcccountFragment acccountFragment = new AcccountFragment();
 
                 switch (item.getItemId()) {
                     case R.id.navigation_maps:
@@ -73,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_events:
                         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, eventFragment).commit();
                         return true;
-                    case R.id.navigation_notifications:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
+                    case R.id.navigation_account:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, acccountFragment).commit();
                         return true;
                 }
                 return false;

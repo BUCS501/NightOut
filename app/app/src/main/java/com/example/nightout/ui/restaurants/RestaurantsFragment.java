@@ -1,7 +1,10 @@
 package com.example.nightout.ui.restaurants;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,6 +24,7 @@ import com.example.nightout.R;
 import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -80,7 +84,14 @@ public class RestaurantsFragment extends Fragment {
         // terminate executor
         executor.shutdownNow();
         System.out.println();
-
+        // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        // Creating an Editor object to edit(write to the file)
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        // Storing the arraylist of restaurants into the shared preferences
+        String restaurantListString = new Gson().toJson(restaurants);
+        myEdit.putString("current_restaurants", restaurantListString);
+        myEdit.commit();
     }
 
     @Override
