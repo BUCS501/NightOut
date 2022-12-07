@@ -24,6 +24,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +47,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE=101;
     Context mContext;
+    List<Restaurant> restaurantList;
+    List<Event> eventList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -69,13 +73,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         if (restaurantListString != null) {
             Type type = new TypeToken<List<Restaurant>>(){}.getType();
             // Usable List of restaurants to parse for LatLong info
-            List<Restaurant> restaurantList = new Gson().fromJson(restaurantListString, type);
+            restaurantList = new Gson().fromJson(restaurantListString, type);
         }
 
         if (eventListString != null) {
             Type type = new TypeToken<List<Event>>(){}.getType();
             // Usable List of events to parse for LatLong info
-            List<Event> eventList = new Gson().fromJson(eventListString, type);
+            eventList = new Gson().fromJson(eventListString, type);
         }
     }
 
@@ -117,8 +121,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                if (restaurantList != null) {
+                    for (Restaurant restaurant : restaurantList) {
+                        LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
+                    }
+                }
+
+                if (eventList != null) {
+                    for (Event event : eventList) {
+                        LatLng event_LatLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).position(event_LatLng).title(event.getName()));
+                    }
+                }
             }
         });
+
+        if (restaurantList != null) {
+            for (Restaurant restaurant : restaurantList) {
+                LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
+            }
+        }
+
+        if (eventList != null) {
+            for (Event event : eventList) {
+                LatLng event_LatLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).position(event_LatLng).title(event.getName()));
+            }
+        }
     }
 
     private void getCurrentLocation() {
@@ -138,6 +170,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MapFragment.this);
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEditor = sharedPreferences.edit();
+                    myEditor.putString("device_latitude", String.valueOf(currentLocation.getLatitude()));
+                    myEditor.putString("device_longitude", String.valueOf(currentLocation.getLongitude()));
+                    myEditor.commit();
                 }
             }
         });
