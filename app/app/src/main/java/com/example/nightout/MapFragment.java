@@ -24,6 +24,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -119,20 +121,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                if (restaurantList != null) {
+                    for (Restaurant restaurant : restaurantList) {
+                        LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
+                    }
+                }
+
+                if (eventList != null) {
+                    for (Event event : eventList) {
+                        LatLng event_LatLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).position(event_LatLng).title(event.getName()));
+                    }
+                }
             }
         });
 
         if (restaurantList != null) {
             for (Restaurant restaurant : restaurantList) {
                 LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(restaurant_LatLng).title(restaurant.getName()));
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
             }
         }
 
         if (eventList != null) {
             for (Event event : eventList) {
                 LatLng event_LatLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
-                mMap.addMarker(new MarkerOptions().position(event_LatLng).title(event.getName()));
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).position(event_LatLng).title(event.getName()));
             }
         }
     }
