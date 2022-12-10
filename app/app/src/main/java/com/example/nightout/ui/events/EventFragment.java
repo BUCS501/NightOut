@@ -26,8 +26,11 @@ import com.example.nightout.R;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.TicketmasterRetrievalThread;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,6 +41,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     private ListAdapter lvAdapter;
     private ArrayList<Event> events;
     private Spinner spinner;
+    private boolean firstTime;
 
     public static EventFragment newInstance(String param1, String param2) {
         EventFragment fragment = new EventFragment();
@@ -55,24 +59,17 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // create an executor service to run the thread
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        // Calls the Yelp API and sets the restaurants array to the results
-        executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
-        executor.shutdown();
-        while (!executor.isTerminated()) {
-            // wait for the thread to finish
-        }
-        // terminate executor
-        executor.shutdownNow();
-        System.out.println();
-
-        // Storing data into SharedPreferences
+        this.firstTime = true;
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        String eventsListString = new Gson().toJson(events);
-        myEdit.putString("current_events", eventsListString);
-        myEdit.commit();
+        String eventListString = sharedPreferences.getString("current_events", null);
+
+        if (eventListString != null) {
+            Type type = new TypeToken<List<Event>>() {
+            }.getType();
+            // Usable List of events to parse for LatLong info
+            events = new Gson().fromJson(eventListString, type);
+        }
+
     }
 
     @Override
@@ -106,11 +103,11 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
 //        update lv by making api calls
         String selected = parent.getItemAtPosition(position).toString();
 
-        if (selected.equals("All")) {
+        if (selected.equals("All") && !firstTime) {
             // create an executor service to run the thread
             ExecutorService executor = Executors.newSingleThreadExecutor();
             // Calls the Yelp API and sets the restaurants array to the results
-            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
+            executor.execute(new TicketmasterRetrievalThread(this, ""));
             executor.shutdown();
             while (!executor.isTerminated()) {
                 // wait for the thread to finish
@@ -119,10 +116,14 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             executor.shutdownNow();
             System.out.println();
         } else {
+            if (firstTime) {
+                firstTime = false;
+                return;
+            }
             // create an executor service to run the thread
             ExecutorService executor = Executors.newSingleThreadExecutor();
             // Calls the Yelp API and sets the restaurants array to the results
-            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589", selected));
+            executor.execute(new TicketmasterRetrievalThread(this, selected));
             executor.shutdown();
             while (!executor.isTerminated()) {
                 // wait for the thread to finish
@@ -132,8 +133,8 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             System.out.println();
 
         }
-        lvAdapter = new EventAdapter(getActivity(), events);
-        lvEvents.setAdapter(lvAdapter);
+//        lvAdapter = new EventAdapter(getActivity(), events);
+//        lvEvents.setAdapter(lvAdapter);
 
     }
 

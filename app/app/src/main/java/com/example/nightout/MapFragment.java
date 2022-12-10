@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nightout.api.TicketmasterRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
 import com.example.nightout.ui.events.Event;
 import com.example.nightout.ui.restaurants.Restaurant;
@@ -128,6 +129,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 addPinLocationtoSharedPref();
                 // Call APIs necessary to get data
                 callYelpRetrievalThread();
+                callTMRetrievalThread();
 
                 addPins();
             }
@@ -199,7 +201,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void callYelpRetrievalThread() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
         executor.execute(new YelpRetrievalThread(this));
@@ -212,11 +213,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         executor.shutdownNow();
         System.out.println();
         // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         // Creating an Editor object to edit(write to the file)
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
         // Storing the arraylist of restaurants into the shared preferences
         String restaurantListString = new Gson().toJson(restaurantList);
         myEdit.putString("current_restaurants", restaurantListString);
+        myEdit.commit();
+    }
+
+    public void callTMRetrievalThread() {
+        // create an executor service to run the thread
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Calls the TicketMaster API and sets the events array to the results
+        executor.execute(new TicketmasterRetrievalThread(this));
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        // terminate executor
+        executor.shutdownNow();
+        System.out.println();
+
+        // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        String eventsListString = new Gson().toJson(eventList);
+        myEdit.putString("current_events", eventsListString);
         myEdit.commit();
     }
 
