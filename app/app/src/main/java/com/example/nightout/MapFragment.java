@@ -73,16 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        String eventListString = sharedPreferences.getString("current_events", null);
-
-        if (eventListString != null) {
-            Type type = new TypeToken<List<Event>>() {
-            }.getType();
-            // Usable List of events to parse for LatLong info
-            eventList = new Gson().fromJson(eventListString, type);
-        }
+        
     }
 
 
