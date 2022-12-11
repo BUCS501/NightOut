@@ -133,8 +133,8 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             System.out.println();
 
         }
-//        lvAdapter = new EventAdapter(getActivity(), events);
-//        lvEvents.setAdapter(lvAdapter);
+        lvAdapter = new EventAdapter(getActivity(), events);
+        lvEvents.setAdapter(lvAdapter);
 
     }
 
