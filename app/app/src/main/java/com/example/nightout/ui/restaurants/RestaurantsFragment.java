@@ -92,6 +92,7 @@ public class RestaurantsFragment extends Fragment {
         lvRestaurants = (ListView) getView().findViewById(R.id.lvRestaurants);
         lvAdapter = new RestaurantAdapter(getActivity(), restaurants);
         lvRestaurants.setAdapter(lvAdapter);
+        lvRestaurants.setEmptyView(getView().findViewById(R.id.no_restaurants_label));
         System.out.println();
 
         lvRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {

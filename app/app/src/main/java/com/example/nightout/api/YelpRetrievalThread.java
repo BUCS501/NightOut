@@ -88,6 +88,7 @@ public class YelpRetrievalThread extends Thread {
 
     public void getCoordinates() {
         SharedPreferences sharedPreferences = originFragment.getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        // get pin location if it has been set
         latitude = sharedPreferences.getString("pin_latitude", null);
         longitude = sharedPreferences.getString("pin_longitude", null);
         if (latitude == null && longitude == null) {
