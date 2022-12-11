@@ -49,6 +49,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     Context mContext;
     List<Restaurant> restaurantList;
     List<Event> eventList;
+    Double storedLat;
+    Double storedLong;
+    LatLng restoringLoc;
 
     public MapFragment() {
         // Required empty public constructor
@@ -60,12 +63,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         mContext = context;
     }
 
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putDouble("stored_lat", storedLat);
+        outState.putDouble("stored_long", storedLong);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
+
+        if (savedInstanceState != null ){
+            restoringLoc = new LatLng(savedInstanceState.getDouble("stored_lat"), savedInstanceState.getDouble("stored_long"));
+        }
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String restaurantListString = sharedPreferences.getString("current_restaurants", null);
@@ -91,14 +104,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         return view;
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
-
 
         LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
@@ -115,12 +127,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 markerOptions.position(latLng);
                 // Set title of marker
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
+                // Storing the pin location coord. in the SharedPreference
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                SharedPreferences.Editor myEditor = sharedPreferences.edit();
+                myEditor.putString("pin_latitude", String.valueOf(latLng.latitude));
+                myEditor.putString("pin_longitude", String.valueOf(latLng.longitude));
+                myEditor.commit();
+
                 // Remove all marker
                 googleMap.clear();
                 // Animating to zoom the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                // restoring the pin location when back from other fragment
+                if (restoringLoc != null){
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(restoringLoc));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
+                }
 
                 if (restaurantList != null) {
                     for (Restaurant restaurant : restaurantList) {
