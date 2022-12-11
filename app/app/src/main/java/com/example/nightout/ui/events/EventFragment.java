@@ -78,6 +78,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
         lvEvents = (ListView) getView().findViewById(R.id.lvEvents);
         lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
+        lvEvents.setEmptyView(getView().findViewById(R.id.no_events_label));
 
         spinner = (Spinner) getView().findViewById(R.id.spinner);
 
@@ -135,6 +136,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
         }
         lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
+        lvEvents.setEmptyView(getView().findViewById(R.id.no_events_label));
 
     }
 
