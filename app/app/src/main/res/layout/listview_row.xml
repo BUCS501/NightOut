@@ -41,6 +41,8 @@
             android:layout_gravity="center_horizontal"
             android:numStars="5"
             android:rating="3"
+            android:scaleX=".5"
+            android:scaleY=".5"
             android:stepSize=".5" />
 
         <!--        <Button-->
