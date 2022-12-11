@@ -38,6 +38,8 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     private ListAdapter lvAdapter;
     private ArrayList<Event> events;
     private Spinner spinner;
+    private String current_latitude;
+    private String current_longitude;
 
     public static EventFragment newInstance(String param1, String param2) {
         EventFragment fragment = new EventFragment();
@@ -55,10 +57,26 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String latitude = sharedPreferences.getString("pin_latitude", null);
+        String longitude = sharedPreferences.getString("pin_longitude", null);
+        if (latitude == null && longitude == null) {
+            // get device current location if pin hasn't been set
+            latitude = sharedPreferences.getString("device_latitude", null);
+            longitude = sharedPreferences.getString("device_longitude", null);
+        }
+        if (latitude == null && longitude == null) {
+            // if device location is not available, set to default location
+            latitude = "42.3601";
+            longitude = "-71.0589";
+        }
+        current_latitude = latitude;
+        current_longitude = longitude;
+
         // create an executor service to run the thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         // Calls the Yelp API and sets the restaurants array to the results
-        executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
+        executor.execute(new TicketmasterRetrievalThread(this,current_latitude,current_longitude));
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish
@@ -68,7 +86,6 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
         System.out.println();
 
         // Storing data into SharedPreferences
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
         String eventsListString = new Gson().toJson(events);
         myEdit.putString("current_events", eventsListString);
@@ -110,7 +127,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             // create an executor service to run the thread
             ExecutorService executor = Executors.newSingleThreadExecutor();
             // Calls the Yelp API and sets the restaurants array to the results
-            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589"));
+            executor.execute(new TicketmasterRetrievalThread(this,current_latitude,current_longitude));
             executor.shutdown();
             while (!executor.isTerminated()) {
                 // wait for the thread to finish
@@ -122,7 +139,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             // create an executor service to run the thread
             ExecutorService executor = Executors.newSingleThreadExecutor();
             // Calls the Yelp API and sets the restaurants array to the results
-            executor.execute(new TicketmasterRetrievalThread(this,"35.3601","-96.0589", selected));
+            executor.execute(new TicketmasterRetrievalThread(this,current_latitude,current_longitude, selected));
             executor.shutdown();
             while (!executor.isTerminated()) {
                 // wait for the thread to finish
