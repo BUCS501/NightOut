@@ -26,7 +26,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class YelpRetrievalThread extends Thread {
 
-    private static final String BASE_RADIUS = "4000";
+    private static final String BASE_RADIUS = "1600";
     private static String BASE_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=current_lat&longitude=current_long&radius=current_radius&sort_by=best_match&limit=20";
     private final MapFragment originFragment;
     private String longitude;

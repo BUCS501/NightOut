@@ -54,6 +54,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Context mContext;
     ArrayList<Restaurant> restaurantList;
     ArrayList<Event> eventList;
+    Double storedLat;
+    Double storedLong;
+    LatLng restoringLoc;
     private String current_latitude;
     private String current_longitude;
 
@@ -67,12 +70,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mContext = context;
     }
 
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putDouble("stored_lat", storedLat);
+        outState.putDouble("stored_long", storedLong);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
+
+        if (savedInstanceState != null ){
+            restoringLoc = new LatLng(savedInstanceState.getDouble("stored_lat"), savedInstanceState.getDouble("stored_long"));
+        }
         getListsFromSharedPreferences();
         
     }
@@ -84,13 +97,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         return view;
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
 
         LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
@@ -107,12 +120,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markerOptions.position(latLng);
                 // Set title of marker
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
                 // Remove all marker
                 googleMap.clear();
                 // Animating to zoom the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                // restoring the pin location when back from other fragment
+                if (restoringLoc != null){
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(restoringLoc));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
+                }
 
                 // Get latitude and longitude of clicked location
                 current_latitude = String.valueOf(latLng.latitude);
