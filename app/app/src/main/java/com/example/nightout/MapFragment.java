@@ -52,8 +52,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 101;
     Context mContext;
-    List<Restaurant> restaurantList;
-    List<Event> eventList;
+    ArrayList<Restaurant> restaurantList;
+    ArrayList<Event> eventList;
     Double storedLat;
     Double storedLong;
     LatLng restoringLoc;
@@ -142,12 +142,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
                 }
 
-                if (restaurantList != null) {
-                    for (Restaurant restaurant : restaurantList) {
-                        LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
-                    }
-                }
                 // Get latitude and longitude of clicked location
                 current_latitude = String.valueOf(latLng.latitude);
                 current_longitude = String.valueOf(latLng.longitude);
