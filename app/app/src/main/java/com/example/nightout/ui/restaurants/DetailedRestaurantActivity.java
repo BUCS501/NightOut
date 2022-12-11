@@ -12,8 +12,10 @@ import android.widget.RatingBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nightout.R;
+import com.example.nightout.SignUp;
 import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 
@@ -84,6 +86,7 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Insert bookmark functionality
+                Toast.makeText(getApplicationContext(), ("Saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
             }
         });
 
