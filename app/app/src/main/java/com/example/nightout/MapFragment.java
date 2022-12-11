@@ -121,13 +121,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 // Set title of marker
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
 
-                // Storing the pin location coord. in the SharedPreference
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-                SharedPreferences.Editor myEditor = sharedPreferences.edit();
-                myEditor.putString("pin_latitude", String.valueOf(latLng.latitude));
-                myEditor.putString("pin_longitude", String.valueOf(latLng.longitude));
-                myEditor.commit();
-
                 // Remove all marker
                 googleMap.clear();
                 // Animating to zoom the marker
