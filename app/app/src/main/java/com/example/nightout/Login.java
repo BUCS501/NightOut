@@ -30,8 +30,10 @@ public class Login extends AppCompatActivity {
                 String user = username.getText().toString();
                 String pass = password.getText().toString();
                 String check = dB.getdatapass(user);
-
-                if(user.equals("")||pass.equals(""))
+                if (check.equals("")) {
+                    Toast.makeText(Login.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                }
+                else if(user.equals("")||pass.equals(""))
                     Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 else{
                     BCrypt.Result result = BCrypt.verifyer().verify(pass.toCharArray(), check);
