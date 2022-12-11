@@ -67,11 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 Fragment mapFragment = new MapFragment();
                 AcccountFragment acccountFragment = new AcccountFragment();
                 NoNetworkFragment noNetworkFragment = new NoNetworkFragment();
-                boolean locationPermissionGranted = true;
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    System.out.println("Permission not granted");
-                    locationPermissionGranted = false;
-                }
                 if (!isNetworkConnected()) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, noNetworkFragment).commit();
                     return false;
