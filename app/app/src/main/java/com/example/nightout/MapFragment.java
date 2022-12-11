@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.nightout.api.TicketmasterRetrievalThread;
+import com.example.nightout.api.YelpRetrievalThread;
 import com.example.nightout.ui.events.Event;
 import com.example.nightout.ui.restaurants.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -24,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,19 +36,26 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     GoogleMap mMap;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-    private static final int REQUEST_CODE=101;
+    private static final int REQUEST_CODE = 101;
     Context mContext;
+    ArrayList<Restaurant> restaurantList;
+    ArrayList<Event> eventList;
+    private String current_latitude;
+    private String current_longitude;
 
     public MapFragment() {
         // Required empty public constructor
@@ -62,23 +73,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        String restaurantListString = sharedPreferences.getString("current_restaurants", null);
-        String eventListString = sharedPreferences.getString("current_events", null);
-        if (restaurantListString != null) {
-            Type type = new TypeToken<List<Restaurant>>(){}.getType();
-            // Usable List of restaurants to parse for LatLong info
-            List<Restaurant> restaurantList = new Gson().fromJson(restaurantListString, type);
-        }
-
-        if (eventListString != null) {
-            Type type = new TypeToken<List<Event>>(){}.getType();
-            // Usable List of events to parse for LatLong info
-            List<Event> eventList = new Gson().fromJson(eventListString, type);
-        }
+        
     }
-
 
 
     @Override
@@ -93,7 +89,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
 
 
         LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -117,8 +112,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                // Get latitude and longitude of clicked location
+                current_latitude = String.valueOf(latLng.latitude);
+                current_longitude = String.valueOf(latLng.longitude);
+
+                addPinLocationtoSharedPref();
+                // Call APIs necessary to get data
+                callYelpRetrievalThread();
+                callTMRetrievalThread();
+
+                addPins();
             }
         });
+
+        addPins();
     }
 
     private void getCurrentLocation() {
@@ -138,10 +146,94 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MapFragment.this);
+                    addDeviceLocationtoSharedPref(currentLocation);
                 }
             }
         });
     }
+
+    public void addRestaurantPins() {
+        if (restaurantList != null) {
+            for (Restaurant restaurant : restaurantList) {
+                LatLng restaurant_LatLng = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).position(restaurant_LatLng).title(restaurant.getName()));
+            }
+        }
+    }
+
+    public void addEventPins() {
+        if (eventList != null) {
+            for (Event event : eventList) {
+                LatLng event_LatLng = new LatLng(Double.parseDouble(event.getLatitude()), Double.parseDouble(event.getLongitude()));
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).position(event_LatLng).title(event.getName()));
+            }
+        }
+    }
+
+    public void addPins() {
+        addRestaurantPins();
+        addEventPins();
+    }
+
+    public void addDeviceLocationtoSharedPref(Location currentLocation) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = sharedPreferences.edit();
+        myEditor.putString("device_latitude", String.valueOf(currentLocation.getLatitude()));
+        myEditor.putString("device_longitude", String.valueOf(currentLocation.getLongitude()));
+        myEditor.commit();
+    }
+
+    public void addPinLocationtoSharedPref() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = sharedPreferences.edit();
+        myEditor.putString("pin_latitude", current_latitude);
+        myEditor.putString("pin_longitude", current_longitude);
+        myEditor.commit();
+    }
+
+    public void callYelpRetrievalThread() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Calls the Yelp API and sets the restaurants array to the results
+        executor.execute(new YelpRetrievalThread(this));
+        //executor.execute(new DetailedYelpRetrievalThread());
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        // terminate executor
+        executor.shutdownNow();
+        System.out.println();
+        // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        // Creating an Editor object to edit(write to the file)
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        // Storing the arraylist of restaurants into the shared preferences
+        String restaurantListString = new Gson().toJson(restaurantList);
+        myEdit.putString("current_restaurants", restaurantListString);
+        myEdit.commit();
+    }
+
+    public void callTMRetrievalThread() {
+        // create an executor service to run the thread
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // Calls the TicketMaster API and sets the events array to the results
+        executor.execute(new TicketmasterRetrievalThread(this));
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // wait for the thread to finish
+        }
+        // terminate executor
+        executor.shutdownNow();
+        System.out.println();
+
+        // Storing data into SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        String eventsListString = new Gson().toJson(eventList);
+        myEdit.putString("current_events", eventsListString);
+        myEdit.commit();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -153,5 +245,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 }
                 break;
         }
+    }
+
+    public String getCurrent_latitude() {
+        return current_latitude;
+    }
+
+    public void setCurrent_latitude(String current_latitude) {
+        this.current_latitude = current_latitude;
+    }
+
+    public String getCurrent_longitude() {
+        return current_longitude;
+    }
+
+    public void setCurrent_longitude(String current_longitude) {
+        this.current_longitude = current_longitude;
+    }
+
+    public void setRestaurantList(ArrayList<Restaurant> restaurantList) {
+        this.restaurantList = restaurantList;
+    }
+
+    public ArrayList<Restaurant> getRestaurantList() {
+        return restaurantList;
+    }
+
+    public void setEventList(ArrayList<Event> eventList) {
+        this.eventList = eventList;
+    }
+
+    public ArrayList<Event> getEventList() {
+        return eventList;
     }
 }

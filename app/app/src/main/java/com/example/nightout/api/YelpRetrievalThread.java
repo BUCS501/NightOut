@@ -1,8 +1,12 @@
 package com.example.nightout.api;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.nightout.BuildConfig;
+import com.example.nightout.MapFragment;
 import com.example.nightout.ui.restaurants.Restaurant;
 import com.example.nightout.ui.restaurants.RestaurantsFragment;
 
@@ -22,13 +26,16 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class YelpRetrievalThread extends Thread {
 
-    private static final String TEST_ZIP = "02215";
-    private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
-    private final RestaurantsFragment originFragment;
+    private static final String BASE_RADIUS = "4000";
+    private static String BASE_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=current_lat&longitude=current_long&radius=current_radius&sort_by=best_match&limit=20";
+    private final MapFragment originFragment;
+    private String longitude;
+    private String latitude;
 
 
-    public YelpRetrievalThread(RestaurantsFragment restaurantsFragment) {
-        this.originFragment = restaurantsFragment;
+    public YelpRetrievalThread(MapFragment mapFragment) {
+        this.originFragment = mapFragment;
+        getCoordinates();
     }
 
     public void run() {
@@ -41,7 +48,8 @@ public class YelpRetrievalThread extends Thread {
 
     public void getRestaurants() throws IOException, ParseException, JSONException {
         ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
-        URL url = new URL(TEST_URL);
+        String url_str = BASE_URL.replace("current_lat", latitude).replace("current_long", longitude).replace("current_radius", BASE_RADIUS);
+        URL url = new URL(url_str);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.YELP_API_KEY);
@@ -72,9 +80,25 @@ public class YelpRetrievalThread extends Thread {
             double latitude = (double) ((JSONObject) restaurant.get("coordinates")).get("latitude");
             restaurants.add(new Restaurant(id, name, address, city, state, zip, price, imageUrl, rating, longitude, latitude));
         }
-        originFragment.setRestaurants(restaurants);
+        originFragment.setRestaurantList(restaurants);
         in.close();
         Log.i("YelpRetrievalThread", "Reached end of API calls");
 
+    }
+
+    public void getCoordinates() {
+        SharedPreferences sharedPreferences = originFragment.getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        latitude = sharedPreferences.getString("pin_latitude", null);
+        longitude = sharedPreferences.getString("pin_longitude", null);
+        if (latitude == null && longitude == null) {
+            // get device current location if pin hasn't been set
+            latitude = sharedPreferences.getString("device_latitude", null);
+            longitude = sharedPreferences.getString("device_longitude", null);
+        }
+        if (latitude == null && longitude == null) {
+            // if device location is not available, set to default location
+            latitude = "42.3601";
+            longitude = "-71.0589";
+        }
     }
 }

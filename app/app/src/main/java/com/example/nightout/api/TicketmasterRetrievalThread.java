@@ -1,6 +1,11 @@
 package com.example.nightout.api;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
+
 import com.example.nightout.BuildConfig;
+import com.example.nightout.MapFragment;
 import com.example.nightout.ui.events.Event;
 import com.example.nightout.ui.events.EventFragment;
 
@@ -21,30 +26,29 @@ public class TicketmasterRetrievalThread extends Thread {
     private static final String API_KEY = BuildConfig.TM_API_KEY;
     private static final String API_URL = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=" + API_KEY;
 
-    private final EventFragment originFragment;
-    private String lat;
-    private String lon;
+    private final MapFragment originFragment;
+    private final EventFragment eventFragment;
+    private String latitude;
+    private String longitude;
     private String keyword;
 
 
-    public TicketmasterRetrievalThread(EventFragment eventsFragment, String lat, String lon) {
-        this.originFragment = eventsFragment;
-        this.lat = lat;
-        this.lon = lon;
+    public TicketmasterRetrievalThread(MapFragment mapFragment) {
+        this.originFragment = mapFragment;
+        this.eventFragment = null;
         this.keyword = "";
-
+        getCoordinates();
     }
-    public TicketmasterRetrievalThread(EventFragment eventsFragment, String lat, String lon, String keyword) {
-        this.originFragment = eventsFragment;
-        this.lat = lat;
-        this.lon = lon;
+    public TicketmasterRetrievalThread(EventFragment eventFragment, String keyword) {
+        this.eventFragment = eventFragment;
+        this.originFragment = null;
         this.keyword = keyword;
-
+        getCoordinates();
     }
 
     public void run() {
         try {
-            getEvents(keyword,10,lat + "," + lon);
+            getEvents(keyword,10,latitude + "," + longitude);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
@@ -108,6 +112,31 @@ public class TicketmasterRetrievalThread extends Thread {
 
 
         }
-        originFragment.setEvents(eventsList);
+        if (originFragment != null && keyword.equals("")) {
+            originFragment.setEventList(eventsList);
+        } else {
+            eventFragment.setEvents(eventsList);
+        }
+    }
+
+    public void getCoordinates() {
+        SharedPreferences sharedPreferences;
+        if (originFragment != null) {
+            sharedPreferences = originFragment.getActivity().getSharedPreferences("MyPref", MODE_PRIVATE);
+        } else {
+            sharedPreferences = eventFragment.getActivity().getSharedPreferences("MyPref", MODE_PRIVATE);
+        }
+        latitude = sharedPreferences.getString("pin_latitude", null);
+        longitude = sharedPreferences.getString("pin_longitude", null);
+        if (latitude == null && longitude == null) {
+            // get device current location if pin hasn't been set
+            latitude = sharedPreferences.getString("device_latitude", null);
+            longitude = sharedPreferences.getString("device_longitude", null);
+        }
+        if (latitude == null && longitude == null) {
+            // if device location is not available, set to default location
+            latitude = "42.3601";
+            longitude = "-71.0589";
+        }
     }
 }

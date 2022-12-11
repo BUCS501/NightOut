@@ -25,8 +25,11 @@ import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,6 +44,8 @@ public class RestaurantsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private String current_latitude;
+    private String current_longitude;
     private ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 
     // TODO: Rename and change types of parameters
@@ -72,26 +77,13 @@ public class RestaurantsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // create an executor service to run the thread
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        // Calls the Yelp API and sets the restaurants array to the results
-        executor.execute(new YelpRetrievalThread(this));
-        //executor.execute(new DetailedYelpRetrievalThread());
-        executor.shutdown();
-        while (!executor.isTerminated()) {
-            // wait for the thread to finish
-        }
-        // terminate executor
-        executor.shutdownNow();
-        System.out.println();
-        // Storing data into SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        // Creating an Editor object to edit(write to the file)
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        // Storing the arraylist of restaurants into the shared preferences
-        String restaurantListString = new Gson().toJson(restaurants);
-        myEdit.putString("current_restaurants", restaurantListString);
-        myEdit.commit();
+        String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        if (restaurantListString != null) {
+            Type type = new TypeToken<List<Restaurant>>(){}.getType();
+            // Usable List of restaurants to parse for LatLong info
+            restaurants = new Gson().fromJson(restaurantListString, type);
+        }
     }
 
     @Override
@@ -126,6 +118,22 @@ public class RestaurantsFragment extends Fragment {
 
     public void setRestaurants(ArrayList<Restaurant> restaurants) {
         this.restaurants = restaurants;
+    }
+
+    public String getCurrent_latitude() {
+        return current_latitude;
+    }
+
+    public void setCurrent_latitude(String current_latitude) {
+        this.current_latitude = current_latitude;
+    }
+
+    public String getCurrent_longitude() {
+        return current_longitude;
+    }
+
+    public void setCurrent_longitude(String current_longitude) {
+        this.current_longitude = current_longitude;
     }
 }
 
