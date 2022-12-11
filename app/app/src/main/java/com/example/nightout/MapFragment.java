@@ -73,6 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
+        getListsFromSharedPreferences();
         
     }
 
@@ -277,5 +278,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public ArrayList<Event> getEventList() {
         return eventList;
+    }
+
+    public void getListsFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        String eventListString = sharedPreferences.getString("current_events", null);
+        if (restaurantListString != null) {
+            Type type = new TypeToken<List<Restaurant>>(){}.getType();
+            // Usable List of restaurants to parse for LatLong info
+            restaurantList = new Gson().fromJson(restaurantListString, type);
+        }
+        if (eventListString != null) {
+            Type type = new TypeToken<List<Event>>() {
+            }.getType();
+            // Usable List of events to parse for LatLong info
+            eventList = new Gson().fromJson(eventListString, type);
+        }
     }
 }
