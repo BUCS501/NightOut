@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nightout.api.TicketmasterRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
@@ -158,6 +160,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            NoLocationPermsFragment noLocationPermsFragment = new NoLocationPermsFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, noLocationPermsFragment).commit();
             return;
         }
 

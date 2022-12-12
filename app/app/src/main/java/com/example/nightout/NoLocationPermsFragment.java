@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +26,9 @@ public class NoLocationPermsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private TextView no_location_label;
+    private ImageView no_location_image;
+
     public NoLocationPermsFragment() {
         // Required empty public constructor
     }
@@ -34,7 +39,7 @@ public class NoLocationPermsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NoLocationPermsFragment.
+     * @return A new instance of fragment NoNetworkFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static NoLocationPermsFragment newInstance(String param1, String param2) {
@@ -60,5 +65,12 @@ public class NoLocationPermsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_no_location_perms, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        no_location_label = getView().findViewById(R.id.no_location_label);
+        no_location_image = getView().findViewById(R.id.no_location_image);
     }
 }
