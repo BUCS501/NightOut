@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        WelcomeFragment welcomeFragment = new WelcomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, welcomeFragment).commit();
         resetLists();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
