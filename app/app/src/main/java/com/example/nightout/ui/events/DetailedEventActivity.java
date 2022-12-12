@@ -1,7 +1,5 @@
 package com.example.nightout.ui.events;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nightout.R;
 import com.example.nightout.api.DetailedTicketmasterRetrievalThread;
@@ -28,10 +28,8 @@ public class DetailedEventActivity extends AppCompatActivity {
     private TextView eventGenre;
     private Button websiteButton;
     private Button bookmarkButton;
+    private Button seatMapButton;
     private String eventID;
-
-
-
 
 
     @Override
@@ -62,36 +60,42 @@ public class DetailedEventActivity extends AppCompatActivity {
         });
 
         // TODO: Insert event bookmark functionality
-bookmarkButton.setOnClickListener(new View.OnClickListener() {
+        bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-            });
+        });
 
-
-
+        seatMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailedEventActivity.this, SeatMapActivity.class);
+                intent.putExtra("seatMapURL", event.getSeatMapUrl());
+                startActivity(intent);
+            }
+        });
 
 
     }
 
     private void initializeViews() {
-         eventName = (TextView) findViewById(R.id.detailedEventName);
-            eventDate = (TextView) findViewById(R.id.detailedEventDate);
-            eventTime = (TextView) findViewById(R.id.detailedEventTime);
-            eventLocation = (TextView) findViewById(R.id.detailedEventLocation);
-            eventGenre = (TextView) findViewById(R.id.detailedEventGenre);
-            websiteButton = (Button) findViewById(R.id.detailedEventPagebtn);
-            bookmarkButton = (Button) findViewById(R.id.detailedEventRSVP);
-            eventImage = (ImageView) findViewById(R.id.detailedEventImage);
-            seatMapImage = (ImageView) findViewById(R.id.seatmapImage);
+        eventName = (TextView) findViewById(R.id.detailedEventName);
+        eventDate = (TextView) findViewById(R.id.detailedEventDate);
+        eventTime = (TextView) findViewById(R.id.detailedEventTime);
+        eventLocation = (TextView) findViewById(R.id.detailedEventLocation);
+        eventGenre = (TextView) findViewById(R.id.detailedEventGenre);
+        websiteButton = (Button) findViewById(R.id.detailedEventPagebtn);
+        bookmarkButton = (Button) findViewById(R.id.detailedEventRSVP);
+        eventImage = (ImageView) findViewById(R.id.detailedEventImage);
+        seatMapButton = (Button) findViewById(R.id.detailedEventSeatMap);
 
 
     }
 
     private void callDetailedTicketmasterAPI() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(new DetailedTicketmasterRetrievalThread(this,eventID ));
+        executor.execute(new DetailedTicketmasterRetrievalThread(this, eventID));
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
@@ -104,11 +108,14 @@ bookmarkButton.setOnClickListener(new View.OnClickListener() {
         eventDate.setText(event.getDate());
         eventTime.setText(event.getTime());
         eventLocation.setText(event.getLocation());
-        eventGenre.setText("Event Type:  "+event.getSegment());
+        eventGenre.setText("Event Type:  " + event.getSegment());
+
+        if (event.getSeatMapUrl() == null) {
+            seatMapButton.setVisibility(View.GONE);
+        }
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new ImageRetrievalThread(event.getImage(), eventImage));
-        executor.execute(new ImageRetrievalThread(event.getSeatMapUrl(), seatMapImage));
         executor.shutdown();
         while (!executor.isTerminated()) {
             // wait for the thread to finish

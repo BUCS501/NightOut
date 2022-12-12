@@ -34,36 +34,41 @@ public class TicketmasterRetrievalThread extends Thread {
     private final EventFragment eventFragment;
     private String latitude;
     private String longitude;
-    private String keyword;
+    private String classificationName;
     private final String radius = "10";
 
 
     public TicketmasterRetrievalThread(MapFragment mapFragment) {
         this.originFragment = mapFragment;
         this.eventFragment = null;
-        this.keyword = "";
+        this.classificationName = "";
         getCoordinates();
     }
 
-    public TicketmasterRetrievalThread(EventFragment eventFragment, String keyword) {
+    public TicketmasterRetrievalThread(EventFragment eventFragment, String classificationName) {
         this.eventFragment = eventFragment;
         this.originFragment = null;
-        this.keyword = keyword;
+        this.classificationName = classificationName;
         getCoordinates();
     }
 
     public void run() {
         try {
-            getEvents(keyword, 10, latitude + "," + longitude);
+            getEvents(classificationName, 20, latitude + "," + longitude);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void getEvents(String keyword, int n, String latlon) throws IOException, JSONException, org.json.simple.parser.ParseException {
+    public void getEvents(String classificationName, int n, String latlon) throws IOException, JSONException, org.json.simple.parser.ParseException {
         ArrayList<Event> eventsList = new ArrayList<Event>();
         String filterDate = getFutureDate(30);
-        URL url = new URL(API_URL + "&keyword=" + keyword + "&size=" + n + "&latlong=" + latlon + "&radius=" + radius +"&endDateTime=" + filterDate);
+        URL url;
+        if (classificationName.equals("")) {
+            url = new URL(API_URL + "&latlong=" + latlon + "&radius=" + radius + "&size=" + n + "&endDateTime=" + filterDate);
+        } else {
+            url = new URL(API_URL + "&latlong=" + latlon  + "&radius=" + radius +"&size=" + n + "&endDateTime=" + filterDate + "&classificationName=" + classificationName);
+        }
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
@@ -122,7 +127,7 @@ public class TicketmasterRetrievalThread extends Thread {
 
 
         }
-        if (originFragment != null && keyword.equals("")) {
+        if (originFragment != null && classificationName.equals("")) {
             originFragment.setEventList(eventsList);
         } else {
             eventFragment.setEvents(eventsList);

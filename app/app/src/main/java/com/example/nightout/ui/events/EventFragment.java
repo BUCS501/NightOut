@@ -82,7 +82,7 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
 
         spinner = (Spinner) getView().findViewById(R.id.spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"All", "Concert", "Sports", "Theater"});
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"All", "Music", "Sports", "Arts & Theatre", "Miscellaneous"});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.notifyDataSetChanged();
         spinner.setAdapter(adapter);
