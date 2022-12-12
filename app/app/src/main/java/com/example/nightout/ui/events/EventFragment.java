@@ -78,10 +78,11 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
         lvEvents = (ListView) getView().findViewById(R.id.lvEvents);
         lvAdapter = new EventAdapter(getActivity(), events);
         lvEvents.setAdapter(lvAdapter);
+        lvEvents.setEmptyView(getView().findViewById(R.id.no_events_label));
 
         spinner = (Spinner) getView().findViewById(R.id.spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"All", "Concert", "Sports", "Theater"});
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"All", "Music", "Sports", "Arts & Theatre", "Miscellaneous"});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.notifyDataSetChanged();
         spinner.setAdapter(adapter);
@@ -133,8 +134,9 @@ public class EventFragment extends Fragment implements AdapterView.OnItemSelecte
             System.out.println();
 
         }
-//        lvAdapter = new EventAdapter(getActivity(), events);
-//        lvEvents.setAdapter(lvAdapter);
+        lvAdapter = new EventAdapter(getActivity(), events);
+        lvEvents.setAdapter(lvAdapter);
+        lvEvents.setEmptyView(getView().findViewById(R.id.no_events_label));
 
     }
 

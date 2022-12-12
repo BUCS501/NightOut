@@ -23,4 +23,8 @@
     <string name="closed">Closed</string>
     <string name="restaurantImageDesc">An image provided by the restaurant</string>
     <string name="mapString">Map</string>
+    <string name="noNetwork">No Network Connection. \n Please check your settings \n or permissions and try again.</string>
+    <string name="noRestaurants">No Restaurants Found. \n Please try again.</string>
+    <string name="noEvents">No Events Found. \n Please try again.</string>
+    <string name="welcome">Welcome to NightOut! \n Please click on the map icon \n below to get started!</string>
 </resources>

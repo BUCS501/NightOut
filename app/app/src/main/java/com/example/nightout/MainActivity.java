@@ -1,70 +1,50 @@
 package com.example.nightout;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.nightout.databinding.ActivityMainBinding;
-import com.example.nightout.ui.account.AcccountFragment;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.view.MenuItem;
 
-import com.example.nightout.ui.events.EventFragment;
-import com.example.nightout.ui.home.HomeFragment;
-import com.example.nightout.ui.restaurants.RestaurantsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import com.example.nightout.ui.account.AcccountFragment;
+import com.example.nightout.ui.events.Event;
+import com.example.nightout.ui.events.EventFragment;
+import com.example.nightout.ui.restaurants.Restaurant;
+import com.example.nightout.ui.restaurants.RestaurantsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TEST_ZIP = "02215";
-    private static final String TEST_URL = "https://api.yelp.com/v3/businesses/search?term=restaurants&location=" + TEST_ZIP;
-
-
+    public static boolean firstTimeMap = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        WelcomeFragment welcomeFragment = new WelcomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, welcomeFragment).commit();
+        resetSharedPreferences();
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 EventFragment eventFragment = new EventFragment();
-                HomeFragment homeFragment = new HomeFragment();
                 RestaurantsFragment restaurantsFragment = new RestaurantsFragment();
                 Fragment mapFragment = new MapFragment();
                 AcccountFragment acccountFragment = new AcccountFragment();
-
+                NoNetworkFragment noNetworkFragment = new NoNetworkFragment();
+                if (!isNetworkConnected()) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, noNetworkFragment).commit();
+                    return false;
+                }
                 switch (item.getItemId()) {
                     case R.id.navigation_maps:
                         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, mapFragment).commit();
@@ -83,10 +63,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
 
+    private void resetSharedPreferences() {
+        ArrayList<Restaurant> restaurantList = new ArrayList<>();
+        ArrayList<Event> eventList = new ArrayList<>();
+        SharedPreferences.Editor myEdit = getSharedPreferences("MyPref", MODE_PRIVATE).edit();
+        myEdit.clear();
+        String restaurantListString = new Gson().toJson(restaurantList);
+        myEdit.putString("current_restaurants", restaurantListString);
+        String eventListString = new Gson().toJson(eventList);
+        myEdit.putString("current_events", eventListString);
+        myEdit.commit();
+    }
 
-
+    @Override
+    public void onBackPressed() {
 
     }
 

@@ -54,6 +54,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Context mContext;
     ArrayList<Restaurant> restaurantList;
     ArrayList<Event> eventList;
+    Double storedLat;
+    Double storedLong;
+//    LatLng restoringLoc;
     private String current_latitude;
     private String current_longitude;
 
@@ -67,12 +70,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mContext = context;
     }
 
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putDouble("stored_lat", storedLat);
+        outState.putDouble("stored_long", storedLong);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
+
+//        if (savedInstanceState != null ){
+//            restoringLoc = new LatLng(savedInstanceState.getDouble("stored_lat"), savedInstanceState.getDouble("stored_long"));
+//        }
+        getListsFromSharedPreferences();
         
     }
 
@@ -83,18 +97,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         return view;
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
-
-        LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
+        LatLng currPin = getCoordinates();
+        mMap.addMarker(new MarkerOptions().position(currPin).title("Current Location"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currLoc));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPin));
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -106,12 +119,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markerOptions.position(latLng);
                 // Set title of marker
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
                 // Remove all marker
                 googleMap.clear();
                 // Animating to zoom the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 // Add marker on map
                 googleMap.addMarker(markerOptions);
+
+                // restoring the pin location when back from other fragment
+//                if (restoringLoc != null){
+//                    mMap.clear();
+//                    mMap.addMarker(new MarkerOptions().position(restoringLoc));
+//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
+//                }
 
                 // Get latitude and longitude of clicked location
                 current_latitude = String.valueOf(latLng.latitude);
@@ -125,7 +146,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 addPins();
             }
         });
-
+        if (MainActivity.firstTimeMap) {
+            addPinLocationtoSharedPref();
+            callYelpRetrievalThread();
+            callTMRetrievalThread();
+            MainActivity.firstTimeMap = false;
+        }
         addPins();
     }
 
@@ -277,5 +303,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public ArrayList<Event> getEventList() {
         return eventList;
+    }
+
+    public void getListsFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String restaurantListString = sharedPreferences.getString("current_restaurants", null);
+        String eventListString = sharedPreferences.getString("current_events", null);
+        if (restaurantListString != null) {
+            Type type = new TypeToken<List<Restaurant>>(){}.getType();
+            // Usable List of restaurants to parse for LatLong info
+            restaurantList = new Gson().fromJson(restaurantListString, type);
+        }
+        if (eventListString != null) {
+            Type type = new TypeToken<List<Event>>() {
+            }.getType();
+            // Usable List of events to parse for LatLong info
+            eventList = new Gson().fromJson(eventListString, type);
+        }
+    }
+
+    public LatLng getCoordinates() {
+        SharedPreferences sharedPreferences = this.getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String latitude;
+        String longitude;
+        // get pin location if it has been set
+        latitude = sharedPreferences.getString("pin_latitude", null);
+        longitude = sharedPreferences.getString("pin_longitude", null);
+        if (latitude == null && longitude == null) {
+            // get device current location if pin hasn't been set
+            latitude = sharedPreferences.getString("device_latitude", null);
+            longitude = sharedPreferences.getString("device_longitude", null);
+        }
+        if (latitude == null && longitude == null) {
+            // if device location is not available, set to default location
+            latitude = "42.3601";
+            longitude = "-71.0589";
+        }
+        return new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
     }
 }
