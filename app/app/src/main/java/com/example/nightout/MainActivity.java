@@ -1,10 +1,7 @@
 package com.example.nightout;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,21 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.nightout.ui.account.AcccountFragment;
 import com.example.nightout.ui.events.Event;
-import com.example.nightout.ui.restaurants.Restaurant;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import android.view.MenuItem;
-
 import com.example.nightout.ui.events.EventFragment;
+import com.example.nightout.ui.restaurants.Restaurant;
 import com.example.nightout.ui.restaurants.RestaurantsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -93,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
         String eventListString = new Gson().toJson(eventList);
         myEdit.putString("current_events", eventListString);
         myEdit.apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
 }

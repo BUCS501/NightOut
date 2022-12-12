@@ -18,7 +18,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -31,6 +35,7 @@ public class TicketmasterRetrievalThread extends Thread {
     private String latitude;
     private String longitude;
     private String keyword;
+    private final String radius = "10";
 
 
     public TicketmasterRetrievalThread(MapFragment mapFragment) {
@@ -39,6 +44,7 @@ public class TicketmasterRetrievalThread extends Thread {
         this.keyword = "";
         getCoordinates();
     }
+
     public TicketmasterRetrievalThread(EventFragment eventFragment, String keyword) {
         this.eventFragment = eventFragment;
         this.originFragment = null;
@@ -48,15 +54,16 @@ public class TicketmasterRetrievalThread extends Thread {
 
     public void run() {
         try {
-            getEvents(keyword,10,latitude + "," + longitude);
+            getEvents(keyword, 10, latitude + "," + longitude);
         } catch (IOException | JSONException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void getEvents(String keyword, int n,String latlon) throws IOException, JSONException, org.json.simple.parser.ParseException {
+    public void getEvents(String keyword, int n, String latlon) throws IOException, JSONException, org.json.simple.parser.ParseException {
         ArrayList<Event> eventsList = new ArrayList<Event>();
-        URL url = new URL(API_URL + "&keyword="+ keyword +"&size=" + n + "&latlong=" + latlon);
+        String filterDate = getFutureDate(30);
+        URL url = new URL(API_URL + "&keyword=" + keyword + "&size=" + n + "&latlong=" + latlon + "&radius=" + radius +"&endDateTime=" + filterDate);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
@@ -72,6 +79,9 @@ public class TicketmasterRetrievalThread extends Thread {
         JSONParser parse = new JSONParser();
         JSONObject data_obj = (JSONObject) parse.parse(result);
         JSONObject embedded = (JSONObject) data_obj.get("_embedded");
+        if (embedded == null) {
+            return;
+        }
         JSONArray events = (JSONArray) embedded.get("events");
         for (int i = 0; i < events.size(); i++) {
             JSONObject event = (JSONObject) events.get(i);
@@ -138,5 +148,33 @@ public class TicketmasterRetrievalThread extends Thread {
             latitude = "42.3601";
             longitude = "-71.0589";
         }
+    }
+
+
+    public String getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = mdformat.format(calendar.getTime());
+        return strDate;
+    }
+
+    private String getFutureDate(int days) {
+        String currentDate = getCurrentDate();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = sdf.parse(currentDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, days);
+        date = c.getTime();
+        String futureDate = sdf.format(date);
+        return futureDate+"T23:59:59Z";
+
     }
 }
