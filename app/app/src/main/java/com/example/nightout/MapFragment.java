@@ -59,6 +59,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     LatLng restoringLoc;
     private String current_latitude;
     private String current_longitude;
+    private boolean firstTime = true;
 
     public MapFragment() {
         // Required empty public constructor
@@ -147,7 +148,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 addPins();
             }
         });
-
+        if (MainActivity.firstTimeMap) {
+            addPinLocationtoSharedPref();
+            callYelpRetrievalThread();
+            callTMRetrievalThread();
+            MainActivity.firstTimeMap = false;
+        }
         addPins();
     }
 

@@ -35,12 +35,14 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <RatingBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/rbRestaurant"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
             android:numStars="5"
             android:rating="3"
+            android:scaleX=".5"
+            android:scaleY=".5"
             android:stepSize=".5" />
 
         <!--        <Button-->

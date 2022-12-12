@@ -23,11 +23,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static boolean firstTimeMap = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        WelcomeFragment welcomeFragment = new WelcomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, welcomeFragment).commit();
         resetLists();
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
