@@ -21,6 +21,7 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         username = (EditText) findViewById(R.id.editTextTextPersonName3);
@@ -65,5 +66,10 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(Login.this,SignUp.class));
             }
         });
+    }
+    //Prevents circumnavigation of login proccess
+    @Override
+    public void onBackPressed() {
+
     }
 }
