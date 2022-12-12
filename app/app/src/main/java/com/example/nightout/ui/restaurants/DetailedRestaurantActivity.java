@@ -86,7 +86,7 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Insert bookmark functionality
-                Toast.makeText(getApplicationContext(), ("Saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
             }
         });
 

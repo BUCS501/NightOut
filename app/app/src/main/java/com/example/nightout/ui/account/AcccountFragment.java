@@ -208,6 +208,7 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             @Override
             public void onClick(View view) {
                 // show a Popup with Rest. names
+                Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
 
