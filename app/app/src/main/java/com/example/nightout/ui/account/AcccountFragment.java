@@ -4,7 +4,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -156,7 +158,11 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         locationperm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
             }
         });
 
