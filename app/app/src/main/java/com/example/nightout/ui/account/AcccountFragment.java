@@ -79,7 +79,7 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
 
     //Set variables for onStart
     ConstraintLayout expandableView,expandableView2,expandableView3,expandableView4;
-    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete;
+    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete, viewSavedRestaurantsBtn;
     CardView cardView,cardView2,cardView3,cardView4;
     DB dB;
 
@@ -182,7 +182,6 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 showPopup(view);
             }
         });
@@ -203,6 +202,15 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             }
         });
 
+        // Button to View Saved Rest. inside Boormarks Third Tab
+        viewSavedRestaurantsBtn = getView().findViewById(R.id.viewSavedRestaurantsBtn);
+        viewSavedRestaurantsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // show a Popup with Rest. names
+            }
+        });
+
         //fourth tab in the accounts fragment
         arrowBtn4.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,9 +226,6 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
                 }
             }
         });
-
-
-
     }
 
     @Override
