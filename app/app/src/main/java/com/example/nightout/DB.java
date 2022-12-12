@@ -16,11 +16,13 @@ public class DB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create Table users(username TEXT primary key, password TEXT, name TEXT)");
+        MyDB.execSQL("create Table savedrestaurants(username TEXT, restaurantid TEXT, restaurantname TEXT, PRIMARY KEY(username, restaurantid))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
         MyDB.execSQL("drop Table if exists users");
+        MyDB.execSQL("drop Table if exists savedrestaurants");
     }
 
     //Function for inserting the data into the table when creating a new user
@@ -85,6 +87,7 @@ public class DB extends SQLiteOpenHelper {
     public void deleter (String usernn){
         SQLiteDatabase MyDB = this.getWritableDatabase();
         MyDB.delete("users","username = '" +usernn + "'",null);
+        MyDB.delete("savedrestaurants","username = '" +usernn + "'",null);
     }
 
 }
