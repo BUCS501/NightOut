@@ -79,7 +79,13 @@ public class DetailedTicketmasterRetrievalThread extends Thread {
         String address = (String) addresses.get("line1");
         String venueName = (String) venue.get("name");
         JSONObject seatmaps = (JSONObject) jsonObject.get("seatmap");
-        String seatmapurl = (String) seatmaps.get("staticUrl");
+        String seatmapurl;
+        if (seatmaps != null) {
+            seatmapurl = (String) seatmaps.get("staticUrl");
+        } else {
+            seatmapurl = null;
+        }
+
         String urlLink = (String) jsonObject.get("url");
         JSONArray images = (JSONArray) jsonObject.get("images");
         JSONObject image = (JSONObject) images.get(0);
