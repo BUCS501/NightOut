@@ -15,12 +15,6 @@
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="124dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/img" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,20 +23,35 @@
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
-                android:layout_height="34dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="John Smith"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textSize="40dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:textSize="15dp"
                 android:gravity="center"
                 android:text="John@gmail.com" />
+
+            <TextView
+                android:id="@+id/testtest"
+                android:textSize="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Location" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#010101"/>
 
         </LinearLayout>
 
@@ -98,12 +107,13 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
 
-                <Switch
-                    android:id="@+id/switch1"
+                <Button
+                    android:id="@+id/permission1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enable location Services"
-                    android:paddingLeft="13dp"
+                    android:text="Change Permissions"
+                    android:paddingLeft="20dp"
+                    android:backgroundTint="#0e4bef"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -136,7 +146,7 @@
                 android:id="@+id/name2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="Account Settings"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_marginStart="12dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,12 +173,13 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
 
-                <Switch
-                    android:id="@+id/switch12"
+                <Button
+                    android:id="@+id/delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enable Sharing"
-                    android:paddingLeft="13dp"
+                    android:text="Delete Account"
+                    android:paddingLeft="20dp"
+                    android:backgroundTint="#ba160c"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -325,6 +336,7 @@
                     android:text="Click here for legal information."
                     android:textColor="#3acaff"
                     android:layout_marginLeft="13dp"
+                    android:clickable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -339,7 +351,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="409dp"
         android:layout_height="110dp"
-        android:layout_marginBottom="50dp"
+
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
