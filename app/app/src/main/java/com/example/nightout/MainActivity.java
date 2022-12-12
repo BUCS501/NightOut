@@ -52,6 +52,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static boolean firstTimeMap = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
