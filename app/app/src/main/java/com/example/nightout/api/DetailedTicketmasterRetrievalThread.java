@@ -93,23 +93,30 @@ public class DetailedTicketmasterRetrievalThread extends Thread {
         JSONArray priceRanges = (JSONArray) jsonObject.get("priceRanges");
 
         String price;
-        if (priceRanges == null) {
-            price = "N/A";
-        } else {
-            JSONObject priceRange = (JSONObject) priceRanges.get(0);
-            if (priceRange == null) {
-                price = "N/A";
-            } else {
-                price = Double.toString((Double) priceRange.get("min"));
-            }
+        String minPrice;
+        String maxPrice;
+        String currency;
 
+        if (priceRanges != null) {
+            JSONObject priceRange = (JSONObject) priceRanges.get(0);
+            minPrice = (String) Double.toString((Double) priceRange.get("min"));
+            maxPrice = (String) Double.toString((Double) priceRange.get("max"));
+            currency = (String) priceRange.get("currency");
+            price = minPrice + " - " + maxPrice + " " + currency;
+
+        } else {
+            price = "N/A";
+            minPrice = "N/A";
+            maxPrice = "N/A";
+            currency = "N/A";
         }
+
 
         JSONObject location = (JSONObject) venue.get("location");
         String latitude = (String) location.get("latitude");
         String longitude = (String) location.get("longitude");
 
-        DetailedEvent detailedEvent = new DetailedEvent(id, name, description, date, time, venueName, price, imageUrl, seatmapurl, genre, urlLink,address,latitude,longitude);
+        DetailedEvent detailedEvent = new DetailedEvent(id, name, description, date, time, venueName, price, imageUrl, seatmapurl, genre, urlLink,address,latitude,longitude,minPrice,maxPrice,currency);
         originActivity.setDetailedEvent(detailedEvent);
 
 

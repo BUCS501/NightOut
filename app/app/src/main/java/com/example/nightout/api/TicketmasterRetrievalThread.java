@@ -3,6 +3,7 @@ package com.example.nightout.api;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.nightout.BuildConfig;
 import com.example.nightout.MapFragment;
@@ -85,6 +86,11 @@ public class TicketmasterRetrievalThread extends Thread {
         JSONObject data_obj = (JSONObject) parse.parse(result);
         JSONObject embedded = (JSONObject) data_obj.get("_embedded");
         if (embedded == null) {
+            if (originFragment != null && classificationName.equals("")) {
+                originFragment.setEventList(eventsList);
+            } else {
+                eventFragment.setEvents(eventsList);
+            }
             return;
         }
         JSONArray events = (JSONArray) embedded.get("events");
@@ -132,6 +138,8 @@ public class TicketmasterRetrievalThread extends Thread {
         } else {
             eventFragment.setEvents(eventsList);
         }
+
+        Log.i("TMRetrievalThread", "Reached end of API calls");
     }
 
     public void getCoordinates() {
