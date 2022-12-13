@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DB extends SQLiteOpenHelper {
     public static final String DBNAME = "Login.db";
     public DB(Context context) {
@@ -16,13 +18,11 @@ public class DB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create Table users(username TEXT primary key, password TEXT, name TEXT)");
-        MyDB.execSQL("create Table bookmarks(username TEXT, itemid TEXT, itemname TEXT, itemtype INT, PRIMARY KEY(username, itemid))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
         MyDB.execSQL("drop Table if exists users");
-        MyDB.execSQL("drop Table if exists bookmarks");
     }
 
     //Function for inserting the data into the table when creating a new user
@@ -87,20 +87,8 @@ public class DB extends SQLiteOpenHelper {
     public void deleter (String usernn) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         MyDB.delete("users","username = '" +usernn + "'",null);
-        MyDB.delete("bookmarks","username = '" +usernn + "'",null);
-    }
 
-    public Boolean saveData (String username, String itemid, String itemname, int itemtype) {
-        SQLiteDatabase MyDB = this.getWritableDatabase();
-        ContentValues contentValues= new ContentValues();
-        contentValues.put("username", username);
-        contentValues.put("itemid", itemid);
-        contentValues.put("itemname", itemname);
-        contentValues.put("itemtype", itemtype);
-        long result = MyDB.insert("bookmarks", null, contentValues);
-        if (result == -1)
-            return false;
-        else
-            return true;
+        // TODO: Delete Bookmarks when user is deleted
+        // MyDB.delete("bookmarks","username = '" +usernn + "'",null);
     }
 }

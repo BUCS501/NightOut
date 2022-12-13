@@ -26,13 +26,11 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.nightout.BuildConfig;
 import com.example.nightout.DB;
+import com.example.nightout.BookmarksDB;
 import com.example.nightout.Login;
-import com.example.nightout.MainActivity;
 import com.example.nightout.R;
 import com.example.nightout.SignUp;
-import com.example.nightout.ui.restaurants.Restaurant;
 
 import java.util.ArrayList;
 
@@ -78,6 +76,13 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
 
     Dialog bookmarkDialog;
 
+    //Set variables for onStart
+    ConstraintLayout expandableView,expandableView2,expandableView3,expandableView4;
+    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete, viewSavedRestaurantsBtn, viewSavedEventsBtn;
+    CardView cardView,cardView2,cardView3,cardView4;
+    DB dB;
+    BookmarksDB BookmarksDB;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,20 +91,16 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         bookmarkDialog = new Dialog(getContext());
+        dB = new DB(getActivity());
+        BookmarksDB = new BookmarksDB(getActivity());
     }
-
-    //Set variables for onStart
-    ConstraintLayout expandableView,expandableView2,expandableView3,expandableView4;
-    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete, viewSavedRestaurantsBtn, viewSavedEventsBtn;
-    CardView cardView,cardView2,cardView3,cardView4;
-    DB dB;
-
 
     @Override
     public void onStart() {
         super.onStart();
         Button btn = getView().findViewById(R.id.button2);
         dB = new DB(getActivity());
+        BookmarksDB = new BookmarksDB(getActivity());
 
         //This is the logout button, sends user back to login
         btn.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +224,8 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             @Override
             public void onClick(View view) {
                 // show a Popup with Rest. names
-                Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
+                showBookmarksPopup(view, "Restaurant");
+                // Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -232,9 +234,9 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         viewSavedEventsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // show a Popup with Rest. names
-                showBookmarksPopup(view);
-                Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
+                // show a Popup with Event names
+                showBookmarksPopup(view, "Event");
+                // Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -273,20 +275,15 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
     // Reference:
     // YouTube: 'How to Create a Custom Pop Up with Great UI in Android Studio' by Aws Rh
     // https://www.youtube.com/watch?v=0DH2tZjJtm0&t=283s
-    public void showBookmarksPopup(View v) {
+    public void showBookmarksPopup(View v, String itemtype) {
         ImageButton closePopupBtn;
         ListView listView;
 
         bookmarkDialog.setContentView(R.layout.fragment_popup_bookmarks);
-
         listView = (ListView) bookmarkDialog.findViewById(R.id.listView);
-
         ArrayList<String> arrayList = new ArrayList<>();
 
-        arrayList.add("android");
-        arrayList.add("is");
-        arrayList.add("so");
-        arrayList.add("confusing");
+        arrayList = BookmarksDB.getSavedData(SignUp.user, itemtype);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(arrayAdapter);
