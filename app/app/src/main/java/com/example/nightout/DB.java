@@ -84,10 +84,25 @@ public class DB extends SQLiteOpenHelper {
     }
 
     //function for deleting the account
-    public void deleter (String usernn){
+    public void deleter (String usernn) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         MyDB.delete("users","username = '" +usernn + "'",null);
         MyDB.delete("savedrestaurants","username = '" +usernn + "'",null);
     }
 
+    public Boolean saveData (String username, String itemid, String itemname, String itemtype) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        ContentValues contentValues= new ContentValues();
+        contentValues.put("username", username);
+        long result = -5;
+        if (itemtype == "restaurants") {
+            contentValues.put("restaurantid", itemid);
+            contentValues.put("restaurantname", itemname);
+            result = MyDB.insert("savedrestaurants", null, contentValues);
+        }
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
 }
