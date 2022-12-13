@@ -12,8 +12,11 @@ import android.widget.RatingBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.nightout.BookmarksDB;
 import com.example.nightout.R;
+import com.example.nightout.SignUp;
 import com.example.nightout.api.DetailedYelpRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 
@@ -37,6 +40,8 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
     private String restaurantID;
     private DetailedRestaurant restaurant;
 
+    BookmarksDB BookmarksDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,9 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
 
         // Gets all of the views from the layout and assigns them to variables
         initializeViews();
+
+        // Contact the Database
+        BookmarksDB = new BookmarksDB(this);
 
         // Gets the restaurant ID from the intent of the RestaurantList Fragment
         Intent intent = getIntent();
@@ -80,10 +88,16 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
             }
         });
 
+        // TODO: Insert bookmark functionality
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Insert bookmark functionality
+                // TO BE DELETED LATER MAYBE: Toast to see the data
+                Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
+                BookmarksDB.saveData(SignUp.user, restaurantID, restaurant.getName(), "Restaurant");
+
+                // function call
+                // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
             }
         });
 

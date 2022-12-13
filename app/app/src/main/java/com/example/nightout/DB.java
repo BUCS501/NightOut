@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DB extends SQLiteOpenHelper {
     public static final String DBNAME = "Login.db";
     public DB(Context context) {
@@ -82,9 +84,11 @@ public class DB extends SQLiteOpenHelper {
     }
 
     //function for deleting the account
-    public void deleter (String usernn){
+    public void deleter (String usernn) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         MyDB.delete("users","username = '" +usernn + "'",null);
-    }
 
+        // TODO: Delete Bookmarks when user is deleted
+        // MyDB.delete("bookmarks","username = '" +usernn + "'",null);
+    }
 }
