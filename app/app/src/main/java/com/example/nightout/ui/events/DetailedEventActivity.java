@@ -7,10 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nightout.R;
+import com.example.nightout.SignUp;
 import com.example.nightout.api.DetailedTicketmasterRetrievalThread;
 import com.example.nightout.api.ImageRetrievalThread;
 
@@ -63,7 +65,11 @@ public class DetailedEventActivity extends AppCompatActivity {
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TO BE DELETED LATER MAYBE: Toast to see the data
+                Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + event.getName() + " (" + eventID + ")"), Toast.LENGTH_SHORT).show();
 
+                // function call
+                // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
             }
         });
 
