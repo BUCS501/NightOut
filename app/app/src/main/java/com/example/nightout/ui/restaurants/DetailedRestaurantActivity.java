@@ -92,12 +92,13 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TO BE DELETED LATER MAYBE: Toast to see the data
-                Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
-                BookmarksDB.saveData(SignUp.user, restaurantID, restaurant.getName(), "Restaurant");
+                if (BookmarksDB.saveData(SignUp.user, restaurantID, restaurant.getName(), "Restaurant")) {
+                    Toast.makeText(getApplicationContext(), ("Saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Already Saved!", Toast.LENGTH_SHORT).show();
+                }
 
-                // function call
-                // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
             }
         });
 

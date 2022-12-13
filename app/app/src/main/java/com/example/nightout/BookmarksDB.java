@@ -38,11 +38,11 @@ public class BookmarksDB extends SQLiteOpenHelper {
     // Function to access savedData by querying & returns Names of Rest./Events as ArrayList
     public ArrayList<String> getSavedData(String username, String itemtype) {
         SQLiteDatabase MyDB = this.getReadableDatabase();
-        Cursor cursor = MyDB.rawQuery("Select * from bookmarks WHERE username = ? and itemtype = ?", new String[] {username, itemtype});
+        String sql = "Select * from bookmarks WHERE username = ? and itemtype = ?";
+        Cursor cursor = MyDB.rawQuery(sql, new String[] {username, itemtype});
         ArrayList<String> arrayList = new ArrayList<>();
-
         while (cursor.moveToNext()) arrayList.add(cursor.getString(2));
-        if (arrayList.isEmpty()) { arrayList.add("ArrayList"); arrayList.add("is"); arrayList.add("empty"); }
+        if (arrayList.isEmpty()) { arrayList.add("No Saved " + itemtype); }
         return arrayList;
     }
 }

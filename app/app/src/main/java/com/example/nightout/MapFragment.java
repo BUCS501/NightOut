@@ -56,8 +56,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Context mContext;
     ArrayList<Restaurant> restaurantList;
     ArrayList<Event> eventList;
-    Double storedLat;
-    Double storedLong;
 //    LatLng restoringLoc;
     private String current_latitude;
     private String current_longitude;
@@ -74,8 +72,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putDouble("stored_lat", storedLat);
-        outState.putDouble("stored_long", storedLong);
     }
 
     @Override
