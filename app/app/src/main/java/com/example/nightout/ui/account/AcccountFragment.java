@@ -225,7 +225,6 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             public void onClick(View view) {
                 // show a Popup with Rest. names
                 showBookmarksPopup(view, "Restaurant");
-                // Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -236,7 +235,6 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             public void onClick(View view) {
                 // show a Popup with Event names
                 showBookmarksPopup(view, "Event");
-                // Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -276,13 +274,13 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
     // YouTube: 'How to Create a Custom Pop Up with Great UI in Android Studio' by Aws Rh
     // https://www.youtube.com/watch?v=0DH2tZjJtm0&t=283s
     public void showBookmarksPopup(View v, String itemtype) {
+        bookmarkDialog.setContentView(R.layout.fragment_popup_bookmarks);
+
         ImageButton closePopupBtn;
         ListView listView;
-
-        bookmarkDialog.setContentView(R.layout.fragment_popup_bookmarks);
         listView = (ListView) bookmarkDialog.findViewById(R.id.listView);
-        ArrayList<String> arrayList = new ArrayList<>();
 
+        ArrayList<String> arrayList = new ArrayList<>();
         arrayList = BookmarksDB.getSavedData(SignUp.user, itemtype);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
