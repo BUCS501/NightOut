@@ -82,11 +82,15 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
             }
         });
 
+        // TODO: Insert bookmark functionality
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Insert bookmark functionality
+                // TO BE DELETED LATER MAYBE: Toast to see the data
                 Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
+
+                // function call
+                // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
             }
         });
 
