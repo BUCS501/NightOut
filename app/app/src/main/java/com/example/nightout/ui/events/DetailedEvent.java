@@ -5,15 +5,22 @@ private String seatMapUrl;
 private String segment;
 private String eventUrl;
 private String address;
+private String minPrice;
+private String maxPrice;
+private String currency;
 
 
 
-    public DetailedEvent(String id,String name, String description, String date, String time, String location, String price, String image, String seatMapUrl, String segment, String eventUrl,String address,String latitude,String longitude) {
+    public DetailedEvent(String id,String name, String description, String date, String time, String location, String price, String image, String seatMapUrl, String segment, String eventUrl,String address,String latitude,String longitude, String minPrice, String maxPrice, String currency) {
         super(id,name, description, date, time, location, price, image,latitude,longitude);
         this.seatMapUrl = seatMapUrl;
         this.segment = segment;
         this.eventUrl = eventUrl;
         this.address = address;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.currency = currency;
+
 
     }
 
@@ -30,4 +37,29 @@ private String address;
     public String getEventUrl() {
         return eventUrl;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getMinPrice() {
+        return minPrice;
+    }
+
+    public String getMaxPrice() {
+        return maxPrice;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getPriceRange() {
+        if (minPrice == null || maxPrice == null) {
+            return null;
+        }
+        return minPrice + " - " + maxPrice + " " + currency;
+    }
+
+
 }

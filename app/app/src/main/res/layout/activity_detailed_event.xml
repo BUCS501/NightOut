@@ -39,14 +39,33 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/detailedEventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Event Description" />
+
+        <TextView
             android:id="@+id/detailedEventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_marginTop="16dp"
             android:text="Venue" />
 
         <TextView
+            android:id="@+id/detailedEventAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Address"
+            />
+
+        <TextView
             android:id="@+id/detailedEventDate"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -58,7 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="detailedEventTime" />
+            android:gravity="center"
+            android:text="Event Time" />
 
 
         <TextView
@@ -66,7 +86,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:gravity="center"
             android:text="Event type: " />
+
+        <TextView
+            android:id="@+id/detailedEventPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Price Range: " />
+
 
         <Button
             android:id="@+id/detailedEventRSVP"

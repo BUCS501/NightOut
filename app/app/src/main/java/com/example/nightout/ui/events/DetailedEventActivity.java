@@ -26,6 +26,9 @@ public class DetailedEventActivity extends AppCompatActivity {
     private TextView eventTime;
     private TextView eventLocation;
     private TextView eventGenre;
+    private TextView eventPrice;
+    private TextView eventDescription;
+    private TextView eventAddress;
     private Button websiteButton;
     private Button bookmarkButton;
     private Button seatMapButton;
@@ -89,6 +92,9 @@ public class DetailedEventActivity extends AppCompatActivity {
         bookmarkButton = (Button) findViewById(R.id.detailedEventRSVP);
         eventImage = (ImageView) findViewById(R.id.detailedEventImage);
         seatMapButton = (Button) findViewById(R.id.detailedEventSeatMap);
+        eventPrice = (TextView) findViewById(R.id.detailedEventPrice);
+        eventDescription = (TextView) findViewById(R.id.detailedEventDescription);
+        eventAddress = (TextView) findViewById(R.id.detailedEventAddress);
 
 
     }
@@ -113,6 +119,20 @@ public class DetailedEventActivity extends AppCompatActivity {
         if (event.getSeatMapUrl() == null) {
             seatMapButton.setVisibility(View.GONE);
         }
+        if (event.getDescription() == null) {
+            eventDescription.setVisibility(View.GONE);
+        } else {
+            eventDescription.setText(event.getDescription());
+        }
+
+        if (event.getPriceRange() == null) {
+            eventPrice.setText("Price:  " + "N/A");
+        } else {
+            eventPrice.setText("Price:  " + event.getPriceRange());
+        }
+
+        eventAddress.setText(event.getAddress());
+
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new ImageRetrievalThread(event.getImage(), eventImage));
