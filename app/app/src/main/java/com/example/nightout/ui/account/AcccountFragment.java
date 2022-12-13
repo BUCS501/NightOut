@@ -2,6 +2,7 @@ package com.example.nightout.ui.account;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +72,8 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         return fragment;
     }
 
+    Dialog bookmarkDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +81,12 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        bookmarkDialog = new Dialog(getContext());
     }
 
     //Set variables for onStart
     ConstraintLayout expandableView,expandableView2,expandableView3,expandableView4;
-    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete, viewSavedRestaurantsBtn;
+    Button arrowBtn,arrowBtn2,arrowBtn3,arrowBtn4,locationperm,delete, viewSavedRestaurantsBtn, viewSavedEventsBtn;
     CardView cardView,cardView2,cardView3,cardView4;
     DB dB;
 
@@ -208,12 +213,23 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
             }
         });
 
-        // Button to View Saved Rest. inside Boormarks Third Tab
+        // Button to View Saved Rest. inside Bookmarks Third Tab
         viewSavedRestaurantsBtn = getView().findViewById(R.id.viewSavedRestaurantsBtn);
         viewSavedRestaurantsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // show a Popup with Rest. names
+                Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Button to View Saved Events inside Bookmarks Third Tab
+        viewSavedEventsBtn = getView().findViewById(R.id.viewSavedEventsBtn);
+        viewSavedEventsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // show a Popup with Rest. names
+                showBookmarksPopup(view);
                 Toast.makeText(getContext(), ("User: " + SignUp.user), Toast.LENGTH_SHORT).show();
             }
         });
@@ -248,6 +264,19 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         popup.setOnMenuItemClickListener(this);
         popup.inflate(R.menu.yesno);
         popup.show();
+    }
+
+    public void showBookmarksPopup(View v) {
+        ImageButton closePopupBtn;
+        bookmarkDialog.setContentView(R.layout.fragment_popup_bookmarks);
+        closePopupBtn = (ImageButton) bookmarkDialog.findViewById(R.id.closePopupBtn);
+        closePopupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bookmarkDialog.dismiss();
+            }
+        });
+        bookmarkDialog.show();
     }
 
     //Deletes the users account

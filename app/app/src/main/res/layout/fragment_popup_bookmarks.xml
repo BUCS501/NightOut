@@ -10,7 +10,7 @@
         android:layout_width="297dp"
         android:layout_height="476dp"
         android:layout_gravity="center"
-        android:background="@color/light_grey"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,12 +25,6 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_baseline_close_24"
             android:layout_gravity="end" />
-
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
 
     </LinearLayout>
 
