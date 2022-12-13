@@ -42,7 +42,7 @@ public class BookmarksDB extends SQLiteOpenHelper {
         ArrayList<String> arrayList = new ArrayList<>();
 
         while (cursor.moveToNext()) arrayList.add(cursor.getString(2));
-        if (arrayList.isEmpty()) { arrayList.add("ArrayList"); arrayList.add("is"); arrayList.add("empty"); }
+        if (arrayList.isEmpty()) { arrayList.add("No Saved " + itemtype); }
         return arrayList;
     }
 }

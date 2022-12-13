@@ -96,8 +96,6 @@ public class DetailedRestaurantActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), ("User: " + SignUp.user + ", saved: " + restaurant.getName()), Toast.LENGTH_SHORT).show();
                 BookmarksDB.saveData(SignUp.user, restaurantID, restaurant.getName(), "Restaurant");
 
-                // function call
-                // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
             }
         });
 
