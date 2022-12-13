@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity {
                     if(result.verified==true){
                         //Log in the existing user and launch the main activity
                         SignUp.user = user;
-                        Toast.makeText(Login.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Sign in successful", Toast.LENGTH_SHORT).show();
                         Intent intent  = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                     }else{
