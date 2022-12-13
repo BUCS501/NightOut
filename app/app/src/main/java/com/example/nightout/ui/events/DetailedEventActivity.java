@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nightout.DB;
 import com.example.nightout.R;
 import com.example.nightout.SignUp;
 import com.example.nightout.api.DetailedTicketmasterRetrievalThread;
@@ -33,11 +34,15 @@ public class DetailedEventActivity extends AppCompatActivity {
     private Button seatMapButton;
     private String eventID;
 
+    DB dB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
+
+        // Contact the Database
+        dB = new DB(this);
 
         // Gets all of the views from the layout and assigns them to variables
         initializeViews();
@@ -70,6 +75,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
                 // function call
                 // db.insertblahblahfunction("restaurants", username, restaurantid, restaurantname);
+                dB.saveData(SignUp.user, eventID, event.getName(), 2);
             }
         });
 
