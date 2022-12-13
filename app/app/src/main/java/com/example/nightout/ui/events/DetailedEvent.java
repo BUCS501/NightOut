@@ -55,9 +55,13 @@ private String currency;
     }
 
     public String getPriceRange() {
-        if (minPrice == null || maxPrice == null) {
+        if (minPrice.equals("N/A") || maxPrice.equals("N/A")) {
             return null;
+        }else if (minPrice.equals(maxPrice)) {
+            return minPrice + " " + currency;
         }
+
+
         return minPrice + " - " + maxPrice + " " + currency;
     }
 
