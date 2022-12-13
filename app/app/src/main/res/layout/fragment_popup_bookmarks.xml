@@ -26,6 +26,12 @@
             app:srcCompat="@drawable/ic_baseline_close_24"
             android:layout_gravity="end" />
 
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="240dp"
+            android:layout_height="377dp"
+            android:layout_gravity="center" />
+
     </LinearLayout>
 
 

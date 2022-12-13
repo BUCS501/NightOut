@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,8 @@ import com.example.nightout.MainActivity;
 import com.example.nightout.R;
 import com.example.nightout.SignUp;
 import com.example.nightout.ui.restaurants.Restaurant;
+
+import java.util.ArrayList;
 
 
 /**
@@ -266,9 +270,27 @@ public class AcccountFragment extends Fragment implements PopupMenu.OnMenuItemCl
         popup.show();
     }
 
+    // Reference:
+    // YouTube: 'How to Create a Custom Pop Up with Great UI in Android Studio' by Aws Rh
+    // https://www.youtube.com/watch?v=0DH2tZjJtm0&t=283s
     public void showBookmarksPopup(View v) {
         ImageButton closePopupBtn;
+        ListView listView;
+
         bookmarkDialog.setContentView(R.layout.fragment_popup_bookmarks);
+
+        listView = (ListView) bookmarkDialog.findViewById(R.id.listView);
+
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        arrayList.add("android");
+        arrayList.add("is");
+        arrayList.add("so");
+        arrayList.add("confusing");
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
+        listView.setAdapter(arrayAdapter);
+
         closePopupBtn = (ImageButton) bookmarkDialog.findViewById(R.id.closePopupBtn);
         closePopupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
