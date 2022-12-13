@@ -1,6 +1,7 @@
 package com.example.nightout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            // launch the login activity
+            Intent intent  = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+        }
         setContentView(R.layout.activity_main);
         WelcomeFragment welcomeFragment = new WelcomeFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, welcomeFragment).commit();

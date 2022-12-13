@@ -35,13 +35,13 @@ public class Login extends AppCompatActivity {
                 String user = username.getText().toString();
                 String pass = password.getText().toString();
                 String check = dB.getdatapass(user);
+                //Checks to see if fields are blank
+                if(user.equals("")||pass.equals(""))
+                    Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 //Checks to see if there is an associated account
-                if (check.equals("")) {
+                else if (check.equals("")) {
                     Toast.makeText(Login.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
-                //Checks to see if fields are blank
-                else if(user.equals("")||pass.equals(""))
-                    Toast.makeText(Login.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 else{
                     //Verifies that the encrypted passwords match using the special Bcrypt decoder
                     BCrypt.Result result = BCrypt.verifyer().verify(pass.toCharArray(), check);
