@@ -12,6 +12,7 @@ public class DB extends SQLiteOpenHelper {
         super(context, "Login.db", null, 1);
     }
 
+    //Create the Table in the database with the email address as the primary key and 2 other values
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create Table users(username TEXT primary key, password TEXT, name TEXT)");
@@ -22,6 +23,7 @@ public class DB extends SQLiteOpenHelper {
         MyDB.execSQL("drop Table if exists users");
     }
 
+    //Function for inserting the data into the table when creating a new user
     public Boolean insertData( String username, String password,String name){
         SQLiteDatabase MyDB = this.getWritableDatabase();
         ContentValues contentValues= new ContentValues();
@@ -34,6 +36,7 @@ public class DB extends SQLiteOpenHelper {
             return true;
     }
 
+    //Function to see if the username exists
     public Boolean checkusername(String username) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("Select * from users where username = ?", new String[]{username});
@@ -42,7 +45,7 @@ public class DB extends SQLiteOpenHelper {
         else
             return false;
     }
-
+    //Function to see if the emailaddress has an associated password
     public Boolean checkusernamepassword(String username, String password){
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("Select * from users where username = ? and password = ?", new String[] {username,password});
@@ -51,6 +54,8 @@ public class DB extends SQLiteOpenHelper {
         else
             return false;
     }
+
+    //Function for retrieving the name associated with a certain email address
     public String getdataname (String usernn) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("Select * from users", null);
@@ -62,6 +67,8 @@ public class DB extends SQLiteOpenHelper {
         }
         return buffer.toString();
     }
+
+    //Function for getting the password associated with a certain email address
     public String getdatapass (String usernn) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("Select * from users", null);
@@ -72,6 +79,12 @@ public class DB extends SQLiteOpenHelper {
             }
         }
         return buffer.toString();
+    }
+
+    //function for deleting the account
+    public void deleter (String usernn){
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        MyDB.delete("users","username = '" +usernn + "'",null);
     }
 
 }

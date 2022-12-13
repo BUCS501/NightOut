@@ -13,10 +13,14 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class SignUp extends AppCompatActivity {
 
+    //Variables and arrays for checking if Username/Password values meet the criteria
     boolean checksymbol = false;
     boolean checkcap = false;
     String[] digits = {"1","2","3","4","5","6","7","8","9","0","!","@","#","$","%","^","&","*"};
     String[] cap = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+
+
+    //Instantiate the variables for the onCreate
     EditText username, password,repassword,name;
     static String namer;
     public static String user;
@@ -33,20 +37,25 @@ public class SignUp extends AppCompatActivity {
         password = (EditText) findViewById(R.id.editTextTextPersonName3);
         repassword = (EditText) findViewById(R.id.editTextTextPassword);
         mbtn = findViewById(R.id.button);
+        //Contact the Database
         dB = new DB(this);
         mbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Set the values to what the user inputs
                 namer = name.getText().toString();
                 user = username.getText().toString();
                 String pass = password.getText().toString();
                 String repass = repassword.getText().toString();
+                //This is where Encryption for the passwords occurs
                 String bcryptHashString = BCrypt.withDefaults().hashToString(12, (pass.toCharArray()));
+                //Checks to see if any fields are empty
                 if(user.equals("")||pass.equals("")||repass.equals("")||namer.equals(""))
                     Toast.makeText(SignUp.this, "Please enter all the required fields", Toast.LENGTH_SHORT).show();
                 else{
+                    //Checks for valid email
                     if (isEmailValid(user)){
-
+                        //Checks to see that password match
                     if(pass.equals(repass)) {
                         for (int i = 0; i < digits.length; i++) {
                             if (pass.contains(digits[i])) {
@@ -58,11 +67,15 @@ public class SignUp extends AppCompatActivity {
                                 checkcap = true;
                             }
                         }
+                        //Checks to see that password meets the requirements
                         if ((pass.length() > 8) && (checksymbol == true) &&(checkcap == true)) {
+                            //Checks to see if the user already exists
                             Boolean checkuser = dB.checkusername(user);
                             if (checkuser == false) {
+                                //Inserts the name, email and encrypted password into the Database
                                 Boolean insert = dB.insertData(user, bcryptHashString,namer);
                                 if (insert == true) {
+                                    //Launches the main activity if all tests are passed
                                     Toast.makeText(SignUp.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
@@ -83,6 +96,8 @@ public class SignUp extends AppCompatActivity {
                 }}
         });
 
+
+        //Button for returning to the Login Activity
         Button btn = findViewById(R.id.button3);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +106,8 @@ public class SignUp extends AppCompatActivity {
             }
         });
     }
+
+    //Function that checks to see if an email address is a valid format
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

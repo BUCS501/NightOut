@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nightout.api.TicketmasterRetrievalThread;
 import com.example.nightout.api.YelpRetrievalThread;
@@ -56,10 +58,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<Event> eventList;
     Double storedLat;
     Double storedLong;
-    LatLng restoringLoc;
+//    LatLng restoringLoc;
     private String current_latitude;
     private String current_longitude;
-    private boolean firstTime = true;
 
     public MapFragment() {
         // Required empty public constructor
@@ -84,9 +85,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         getCurrentLocation();
 
-        if (savedInstanceState != null ){
-            restoringLoc = new LatLng(savedInstanceState.getDouble("stored_lat"), savedInstanceState.getDouble("stored_long"));
-        }
+//        if (savedInstanceState != null ){
+//            restoringLoc = new LatLng(savedInstanceState.getDouble("stored_lat"), savedInstanceState.getDouble("stored_long"));
+//        }
         getListsFromSharedPreferences();
         
     }
@@ -105,11 +106,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-
-        LatLng currLoc = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
+        LatLng currPin = getCoordinates();
+        mMap.addMarker(new MarkerOptions().position(currPin).title("Current Location"));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currLoc));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPin));
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -130,11 +130,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 googleMap.addMarker(markerOptions);
 
                 // restoring the pin location when back from other fragment
-                if (restoringLoc != null){
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(restoringLoc));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
-                }
+//                if (restoringLoc != null){
+//                    mMap.clear();
+//                    mMap.addMarker(new MarkerOptions().position(restoringLoc));
+//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restoringLoc, 15));
+//                }
 
                 // Get latitude and longitude of clicked location
                 current_latitude = String.valueOf(latLng.latitude);
@@ -160,6 +160,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            NoLocationPermsFragment noLocationPermsFragment = new NoLocationPermsFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, noLocationPermsFragment).commit();
             return;
         }
 
@@ -322,5 +324,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             // Usable List of events to parse for LatLong info
             eventList = new Gson().fromJson(eventListString, type);
         }
+    }
+
+    public LatLng getCoordinates() {
+        SharedPreferences sharedPreferences = this.getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String latitude;
+        String longitude;
+        // get pin location if it has been set
+        latitude = sharedPreferences.getString("pin_latitude", null);
+        longitude = sharedPreferences.getString("pin_longitude", null);
+        if (latitude == null && longitude == null) {
+            // get device current location if pin hasn't been set
+            latitude = sharedPreferences.getString("device_latitude", null);
+            longitude = sharedPreferences.getString("device_longitude", null);
+        }
+        if (latitude == null && longitude == null) {
+            // if device location is not available, set to default location
+            latitude = "42.3601";
+            longitude = "-71.0589";
+        }
+        return new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
     }
 }

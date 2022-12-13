@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         WelcomeFragment welcomeFragment = new WelcomeFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, welcomeFragment).commit();
-        resetLists();
+        resetSharedPreferences();
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -70,15 +70,16 @@ public class MainActivity extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
-    private void resetLists() {
+    private void resetSharedPreferences() {
         ArrayList<Restaurant> restaurantList = new ArrayList<>();
         ArrayList<Event> eventList = new ArrayList<>();
         SharedPreferences.Editor myEdit = getSharedPreferences("MyPref", MODE_PRIVATE).edit();
+        myEdit.clear();
         String restaurantListString = new Gson().toJson(restaurantList);
         myEdit.putString("current_restaurants", restaurantListString);
         String eventListString = new Gson().toJson(eventList);
         myEdit.putString("current_events", eventListString);
-        myEdit.apply();
+        myEdit.commit();
     }
 
     @Override
