@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             // launch the login activity
+            Toast.makeText(getApplicationContext(), "Permissions changed. Please sign back in", Toast.LENGTH_LONG).show();
             Intent intent  = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
         }
